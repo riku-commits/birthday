@@ -1,257 +1,263 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>当日登録（飲み会）</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>当日登録（やっちゃん誕生会）</title>
 
 <style>
-
 body{
+    background:#f5f6fa;
+    font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
     margin:0;
-    background:#f3f5f7;
-    font-family: "ヒラギノ角ゴ ProN","メイリオ","Arial",sans-serif;
 }
 
+/* ヘッダー */
 .header{
     background:#005bac;
     color:white;
-    padding:12px 18px;
-    font-size:18px;
-    font-weight:bold;
+    padding:14px;
+    font-size:20px;
 }
 
+/* カード */
 .container{
-    width:80%;
     max-width:900px;
     margin:40px auto;
     background:white;
-    border-radius:10px;
+    border-radius:12px;
     padding:25px;
+    box-shadow:0 3px 12px rgba(0,0,0,0.15);
 }
 
-.title{
-    font-size:18px;
-    font-weight:bold;
-}
-
-.info{
-    font-size:13px;
-    margin-top:3px;
-}
-
-.time-box{
-    margin-top:18px;
+.slot{
     border:1px solid #ddd;
     border-radius:10px;
-}
-
-.option{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:18px;
-    border-bottom:1px solid #ddd;
-    cursor:pointer;
-}
-
-.option:last-child{
-    border-bottom:none;
-}
-
-.option input{
-    transform:scale(1.4);
-}
-
-.status{
-    color:#666;
-}
-
-.reserve-btn{
-    width:100%;
-    background:#d7000f;
-    color:white;
-    border:none;
     padding:16px;
-    font-size:18px;
-    margin-top:25px;
-    border-radius:8px;
+    margin:8px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
     cursor:pointer;
 }
 
-.reserve-btn:hover{
-    opacity:0.9;
+.slot:hover{
+    border:1px solid #ff0033;
 }
 
-
-/* モーダル共通 */
-.modal{
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.45);
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+/* 状態ラベル */
+.status{
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:13px;
 }
 
-.modal-box{
-  background:white;
-  padding:30px;
-  border-radius:10px;
-  width:320px;
-  text-align:center;
-  font-size:17px;
+.free{ background:#e3f4ff; color:#005bac; }
+.busy{ background:#fff4ce; color:#b88600; }
+.full{ background:#ffe3e3; color:#b00000; }
+.unknown{ background:#eee; color:#666; }
+
+/* ボタン */
+.button{
+    background:#d90000;
+    color:white;
+    text-align:center;
+    padding:18px;
+    margin-top:25px;
+    border-radius:4px;
+    font-size:18px;
+    cursor:pointer;
+}
+.button:hover{
+    opacity:0.85;
 }
 
-.close-btn{
-  width:100%;
-  padding:12px;
-  margin-top:18px;
-  border:1px solid #555;
-  border-radius:8px;
-  background:white;
-  cursor:pointer;
+/* ローディング画面 */
+.loading{
+    display:none;
+    text-align:center;
+    margin-top:25px;
+    font-size:18px;
 }
 
-.loading-icon{
-  font-size:40px;
-  margin-bottom:10px;
+/* ポップアップ */
+.popup-mask{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.55);
+    display:none;
+    justify-content:center;
+    align-items:center;
 }
 
+.popup{
+    width:360px;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+}
+
+/* 赤いエラーページ */
+.error-page{
+    display:none;
+    text-align:center;
+    margin-top:100px;
+}
+
+.waiting{
+    display:none;
+    text-align:center;
+    margin-top:80px;
+}
 </style>
-
 </head>
 
 <body>
 
 <div class="header">
-    当日登録（飲み会）
+当日登録（やっちゃん誕生会）
 </div>
 
 <div class="container">
 
-    <div class="title">2025年11月飲み会</div>
-    <div class="info">開催日：2025年11月23日(日)</div>
-    <div class="info">参加人数：1名</div>
+<h3>2025年12月30日(火)</h3>
+参加人数：未入力
 
-    <div class="time-box">
+<div class="slot" onclick="selectSlot(1)">
+  18:00〜 <span class="status free">空きあり</span>
+</div>
 
-        <label class="option">
-            <div>
-                <input type="radio" name="time" value="18:00">
-                18:00〜
-            </div>
-            <div class="status">空きあり</div>
-        </label>
+<div class="slot" onclick="selectSlot(2)">
+  18:30〜 <span class="status busy">やや混雑</span>
+</div>
 
-        <label class="option">
-            <div>
-                <input type="radio" name="time" value="18:30">
-                18:30〜
-            </div>
-            <div class="status">やや混雑</div>
-        </label>
+<div class="slot" onclick="selectSlot(3)">
+  19:00〜 <span class="status full">満席</span>
+</div>
 
-        <label class="option">
-            <div>
-                <input type="radio" name="time" value="19:00">
-                19:00〜
-            </div>
-            <div class="status">満席</div>
-        </label>
+<div class="slot" onclick="selectSlot(4)">
+  二次会から参加 <span class="status unknown">不安定</span>
+</div>
 
-        <label class="option">
-            <div>
-                <input type="radio" name="time" value="二次会">
-                二次会から参加
-            </div>
-            <div class="status">不安定</div>
-        </label>
+<div class="button" onclick="reserve()">
+この時間で参加する →
+</div>
 
-    </div>
-
-    <button class="reserve-btn" onclick="startReservation()">
-        この時間で参加する →
-    </button>
+<div class="loading" id="loading">
+通信中です…<br>
+誕生会システムに接続しています…
+</div>
 
 </div>
 
-
-<!-- 処理中 -->
-<div id="loadingModal" class="modal">
-  <div class="modal-box">
-      <div class="loading-icon">⏳</div>
-      通信中です<br>しばらくお待ちください
-  </div>
+<!-- ▼ ポップアップ -->
+<div class="popup-mask" id="popup-mask">
+ <div class="popup" id="popup-box">
+ </div>
 </div>
 
-
-<!-- 成功 -->
-<div id="successModal" class="modal">
-  <div class="modal-box">
-    ＜空き枠先着＞
-    <br><br>
-    パビリオン/イベントが<br>
-    予約されました
-    <br><br>
-    <button class="close-btn" onclick="closeModal('successModal')">とじる</button>
-  </div>
+<!-- ▼ 赤いエラーページ -->
+<div class="error-page" id="error">
+<h1>エラーが発生しました</h1>
+<p>処理を中断しました。</p>
+<p>(エラーコード：YACCHAN_DL_999_9_900_1)</p>
+<div class="button" onclick="location.reload()">トップへもどる</div>
 </div>
 
-
-<!-- 失敗 -->
-<div id="errorModal" class="modal">
-  <div class="modal-box">
-    定員を超えたため、<br>
-    ご希望の時間帯は選択できませんでした
-    <br><br>
-    お手数ですが、<br>
-    来場日時を再度選択してください。
-    <br><br>
-    <button class="close-btn" onclick="closeModal('errorModal')">とじる</button>
-  </div>
+<!-- ▼ 待ち画面 -->
+<div class="waiting" id="waiting">
+<h2>順番にご案内しております。</h2>
+<p>現在、大変混雑しております。<br>
+あなたの前に並んでいる人数：<b>65823人</b></p>
+<p>参加申し込みまでの目安：<b>1時間以上</b></p>
+<p>しばらくこの画面のままお待ちください。</p>
 </div>
-
 
 <script>
+let selected = null;
 
-function startReservation(){
+function selectSlot(n){
+    selected = n;
+    alert("時間帯を選択しました。続けて下の赤いボタンを押してください。");
+}
 
-    const checked = document.querySelector('input[name="time"]:checked');
+function reserve(){
 
-    if(!checked){
+    if(!selected){
         alert("時間帯を選択してください。");
         return;
     }
 
-    document.getElementById("loadingModal").style.display="flex";
+    document.getElementById("loading").style.display="block";
 
-    const wait = Math.floor(Math.random()*3000)+3000;
-
-    setTimeout(()=>{
-
-        document.getElementById("loadingModal").style.display="none";
-
-        // 成功率 2%
-        if(Math.random() < 0.02){
-            document.getElementById("successModal").style.display="flex";
-        } else {
-            document.getElementById("errorModal").style.display="flex";
-        }
-
-    },wait);
+    setTimeout(() => {
+        decideResult();
+    }, 5000); // ← ここが「イライラ待ち時間」
 }
 
 
-function closeModal(id){
-    document.getElementById(id).style.display="none";
+// ▼ ここで確率制御
+function decideResult(){
+
+    const rand = Math.random()*100;
+
+    if(rand < 2){
+        successPopup();
+    } else if(rand < 50){
+        fullPopup();
+    } else if(rand < 80){
+        notSecuredPopup();
+    } else if(rand < 90){
+        document.getElementById("loading").style.display="none";
+        document.getElementById("error").style.display="block";
+    } else {
+        document.getElementById("loading").style.display="none";
+        document.getElementById("waiting").style.display="block";
+    }
 }
 
+
+// ▼ 成功
+function successPopup(){
+    showPopup(`
+    <h3>＜空き枠先着＞</h3>
+    誕生会の参加が確保されました<br><br>
+    やっちゃん誕生会<br>
+    参加受付 準備中<br><br>
+    <div class="button" onclick="closePopup()">とじる</div>
+    `);
+}
+
+// ▼ 定員オーバー
+function fullPopup(){
+    showPopup(`
+    <h3>定員を超えたため<br>選択できませんでした</h3>
+    お手数ですが、別の時間帯を再度選択してください。<br><br>
+    <div class="button" onclick="closePopup()">とじる</div>
+    `);
+}
+
+// ▼ 予約確保できず
+function notSecuredPopup(){
+    showPopup(`
+    <h3>誕生会の参加枠を<br>確保できませんでした</h3>
+    お手数ですが、もう一度お試しください。<br><br>
+    <div class="button" onclick="closePopup()">とじる</div>
+    `);
+}
+
+function showPopup(html){
+    document.getElementById("loading").style.display="none";
+    document.getElementById("popup-mask").style.display="flex";
+    document.getElementById("popup-box").innerHTML = html;
+}
+
+function closePopup(){
+    document.getElementById("popup-mask").style.display="none";
+}
 </script>
 
 </body>
 </html>
-
