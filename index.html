@@ -1,275 +1,162 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>やっちゃん誕生日会 参加予約</title>
 
 <style>
 body{
-    font-family:"Yu Gothic","メイリオ",sans-serif;
-    background:#ffffff;
-    margin:0;
+  font-family: Arial, "Hiragino Sans", Meiryo;
+  background:#f5f5f5;
 }
-
-/* ---- HEADER ---- */
-header{
-    background:#005bac;
-    color:white;
-    padding:12px 18px;
-    font-size:18px;
-    font-weight:bold;
+.wrap{
+  max-width:900px;
+  margin:40px auto;
+  background:#fff;
+  padding:25px 35px;
+  border-radius:8px;
 }
-
-/* ---- CONTAINER ---- */
-.wrapper{
-    max-width:800px;
-    margin:0 auto;
-    padding:20px;
+h2{
+  margin-bottom:2px;
 }
-
-/* BOX */
-.box{
-    border:1px solid #ddd;
-    border-radius:10px;
-    padding:18px;
-    background:#fff;
-}
-
-/* タイトル */
-.dateTitle{
-    font-size:18px;
-    font-weight:bold;
-}
-
-.subText{
-    font-size:12px;
-    color:#666;
-}
-
-/* ---- SLOT ---- */
 .slot{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:12px 12px 12px 10px;
-    margin-top:10px;
-    background:#fafafa;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:14px;
+  margin:8px 0;
 }
+.icon{
+  font-size:24px;
+  width:40px;
+  text-align:center;
+}
+.ok{ color:#007bff; }     /* 青（空き） */
+.mid{ color:#e6a400; }    /* 黄（やや混雑） */
+.ng{ color:#ff0000; }     /* 赤（満員） */
 
-.left{
-    display:flex;
-    align-items:center;
-    gap:10px;
+.time{
+  flex:1;
+  font-size:17px;
+  margin-left:10px;
 }
 
 .slot input{
-    transform:scale(1.3);
+  width:20px;
+  height:20px;
 }
 
-.time{
-    font-size:15px;
+.slot.disabled{
+  background:#eeeeee;
+  color:#aaa;
+  pointer-events:none;
 }
 
-.status{
-    font-size:22px;
+.legend{
+  margin-top:10px;
+  font-size:14px;
 }
+.legend span{ margin-right:18px; }
 
-/* 選択ガイド（○△×） */
-.legendBox{
-    margin-top:12px;
-    padding:8px;
-    border-top:1px dashed #ccc;
-    display:flex;
-    gap:18px;
-    font-size:13px;
+.reserveBox{
+  margin-top:20px;
+  text-align:center;
 }
-
-/* ---- 選択結果エリア ---- */
-.selectedBox{
-    margin-top:18px;
-    padding:12px;
-    border-radius:6px;
-    background:#fdecec;
-    border:1px solid #ff9e9e;
-    text-align:center;
-    font-weight:bold;
+.btn{
+  width:100%;
+  background:#d30000;
+  color:#fff;
+  padding:18px 0;
+  border-radius:6px;
+  font-size:18px;
+  border:none;
 }
-
-/* ---- ボタン ---- */
-.reserveBtn{
-    width:100%;
-    margin-top:12px;
-    background:#d80000;
-    border:none;
-    color:white;
-    padding:16px;
-    border-radius:12px;
-    font-size:16px;
+.btn:disabled{
+  background:#ffcccc;
 }
-
-/* ---- 下のグレー枠 ---- */
-.bottomNote{
-    margin-top:12px;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    background:#fafafa;
-}
-
-.bottomNote span{
-    color:red;
-}
-
-/* ---- MODAL ---- */
-.modalBg{
-    display:none;
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    background:rgba(0,0,0,0.75);
-    justify-content:center;
-    align-items:center;
-}
-
-.modalBox{
-    width:360px;
-    background:white;
-    border-radius:10px;
-    padding:20px;
-    text-align:center;
-}
-
-.closeBtn{
-    width:90%;
-    margin-top:15px;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #333;
+.statusBox{
+  background:#fff3f3;
+  padding:12px;
+  margin-top:12px;
+  text-align:center;
+  color:#444;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<header>やっちゃん誕生日会 参加予約</header>
+<div class="wrap">
 
-<div class="wrapper">
-<div class="box">
+<h2>2025年12月30日(火)</h2>
+<p>12月30日 やっちゃん誕生日会／参加時間帯を選んでください</p>
 
-<div class="dateTitle">2025年12月30日(火)</div>
-<div class="subText">12月30日 やっちゃん誕生日会／参加時間帯を選んでください</div>
+<div id="slots"></div>
 
-<div id="slotArea"></div>
-
-<div class="legendBox">
-    <div>⭕ 空きあり</div>
-    <div>△ 少し混雑</div>
-    <div>❌ 満員（予約不可）</div>
+<div class="legend">
+  <span style="color:#007bff;">◯ 空きあり</span>
+  <span style="color:#e6a400;">△ 少し混雑</span>
+  <span style="color:#ff0000;">× 満員(予約不可)</span>
 </div>
 
-<div class="selectedBox" id="selectedText">
-未選択
-</div>
-
-<button class="reserveBtn" onclick="reserve()">この時間で参加する →</button>
-
-<div class="bottomNote">
-<span>・</span> 他のイベントの選択にもどる
+<div class="reserveBox">
+  <div class="statusBox" id="status">未選択</div>
+  <button class="btn" id="reserveBtn" disabled>この時間で参加する →</button>
 </div>
 
 </div>
-</div>
-
-
-<!-- ===== MODAL ===== -->
-<div class="modalBg" id="modal">
-    <div class="modalBox">
-        <div id="modalText">処理中です…</div>
-        <button class="closeBtn" onclick="closeModal()">とじる</button>
-    </div>
-</div>
-
 
 <script>
-/* ========== 時間帯(本家風8枠固定) ========== */
 const times = [
  "18:00〜","18:20〜","18:40〜","19:00〜",
  "19:20〜","19:40〜","20:00〜","20:20〜"
 ];
 
-let selected = "";
-
-/* ========== 本家っぽい割合で ○△× をランダム ======== */
-/* ○ = 35%  △ = 35%  × = 30% */
-function drawSlots(){
-    const area = document.getElementById("slotArea");
-    area.innerHTML = "";
-
-    times.forEach(t=>{
-        const r = Math.random()*100;
-        let mark="⭕";
-        let disable="";
-
-        if(r < 30){ mark="❌"; disable="disabled"; }
-        else if(r < 65){ mark="△"; }
-
-        area.innerHTML += `
-        <div class="slot">
-            <div class="left">
-                <input type="radio" name="time" value="${t}" ${disable} onclick="setSelect('${t}')">
-                <div class="time">${t}</div>
-            </div>
-            <div class="status">${mark}</div>
-        </div>`;
-    })
+// ランダムに ◯ △ × をばらまく
+function randomStatus(){
+ const r = Math.random();
+ if(r<0.45) return "ok";
+ if(r<0.75) return "mid";
+ return "ng";
 }
 
-drawSlots();
+const area = document.getElementById("slots");
 
-/* ========== 選択表示 ========== */
-function setSelect(t){
-    selected=t;
-    document.getElementById("selectedText").innerText = "選択中：" + t;
-}
+times.forEach((t,i)=>{
+ const s = randomStatus();
 
-/* ========== 予約処理 ========== */
-function reserve(){
+ const div = document.createElement("div");
+ div.className = "slot" + (s==="ng" ? " disabled":"");
 
-    if(!selected){
-        alert("時間帯を選択してください");
-        return;
-    }
+ const icon = document.createElement("div");
+ icon.className = "icon " + s;
+ icon.innerText = s==="ok"?"◯":s==="mid"?"△":"×";
 
-    const modal=document.getElementById("modal");
-    modal.style.display="flex";
-    document.getElementById("modalText").innerHTML =
-        "アクセスが集中しています…<br>順番に処理しています";
+ const label = document.createElement("div");
+ label.className="time";
+ label.innerText = t;
 
-    setTimeout(()=>{
-        const r=Math.random()*100;
+ const input = document.createElement("input");
+ input.type="radio";
+ input.name="time";
+ input.value=t;
+ if(s==="ng") input.disabled=true;
 
-        if(r<4){
-            document.getElementById("modalText").innerHTML =
-            "＜ 空き枠先着 ＞<br>誕生日会の参加予約が<br>確定しました！";
-        }
-        else if(r<58){
-            document.getElementById("modalText").innerHTML =
-            "＜ 空き枠先着 ＞<br>誕生日会の参加予約を<br>確保できませんでした";
-        }
-        else{
-            document.getElementById("modalText").innerHTML =
-            "エラーが発生しました<br>処理を中断しました<br><br>(E_SW_GP_DL_999_900_1)";
-        }
+ input.addEventListener("change", ()=>{
+   document.getElementById("status").innerText = t + " を選択中";
+   document.getElementById("reserveBtn").disabled = false;
+ });
 
-    },3800);
-}
+ div.append(icon,input,label);
+ area.append(div);
+});
 
-function closeModal(){
-    document.getElementById("modal").style.display="none";
-}
+document.getElementById("reserveBtn").addEventListener("click",()=>{
+ alert("誕生日会の参加予約が確定しました！");
+});
 </script>
 
 </body>
