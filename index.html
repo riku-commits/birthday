@@ -1,228 +1,211 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<title>やっちゃん誕生日会 参加予約</title>
-
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>やっちゃん誕生日会 参加予約</title>
 
 <style>
 
 body {
     font-family: "Yu Gothic", "メイリオ", sans-serif;
-    background: #f5f5f5;
-    margin: 0;
+    background:#f2f4f8;
+    margin:0;
 }
 
-.header {
-    background:#1976d2;
+/* ヘッダー（EXPO風） */
+header {
+    background:#005bac;
     color:white;
-    padding:14px;
+    padding:10px 20px;
     font-size:18px;
+    font-weight:bold;
 }
 
+/* メインカード */
 .container {
-    width:90%;
     max-width:700px;
-    margin:20px auto;
-    background:white;
+    margin:40px auto;
+    background:#fff;
     border-radius:10px;
-    padding:20px;
+    padding:25px;
 }
 
-.time-box {
-    border:1px solid #ccc;
-    border-radius:8px;
-    margin:10px 0;
-    padding:10px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.left {
-    display:flex;
-    align-items:center;
-}
-
-.statusmark {
-    font-size:22px;
-    width:28px;
-    text-align:center;
-    margin-right:10px;
-}
-
-/* 予約不可はグレーアウト＆選択不可 */
-.unavailable {
-    opacity:0.4;
-}
-
-.unavailable input {
-    pointer-events:none;
-}
-
-.bigbtn {
-    background:#d32f2f;
-    color:white;
-    width:100%;
-    border:none;
-    border-radius:6px;
-    padding:14px;
+/* 見出し */
+.title {
     font-size:18px;
-    margin-top:20px;
+    margin-bottom:5px;
 }
 
-.overlay {
+/* --- 時間帯カード --- */
+.slot {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:14px;
+    margin-top:8px;
+    background:#fafafa;
+}
+
+/* 選択ボタン */
+.slot input {
+    transform:scale(1.4);
+}
+
+/* ○ △ × */
+.status {
+    font-size:22px;
+}
+
+/* 申込ボタン */
+button.reserve {
+    width:100%;
+    margin-top:25px;
+    padding:15px;
+    border:none;
+    background:#d80000;
+    color:white;
+    border-radius:8px;
+    font-size:17px;
+}
+
+/* --- モーダル --- */
+.modal-bg {
     position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.6);
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.75);
     display:none;
+    justify-content:center;
+    align-items:center;
 }
 
-.popup {
+.modal-box {
     background:white;
-    width:90%;
-    max-width:400px;
-    margin:120px auto;
-    border-radius:10px;
-    padding:20px;
+    width:380px;
+    padding:25px;
+    border-radius:8px;
     text-align:center;
 }
 
-.closebtn {
-    background:#d32f2f;
-    color:white;
-    border:none;
+/* 閉じる */
+.close-btn {
+    margin-top:25px;
     width:90%;
-    padding:12px;
+    padding:10px;
+    border:1px solid #444;
     border-radius:6px;
-    margin-top:10px;
 }
 
 </style>
-
 </head>
+
 <body>
 
-<div class="header">
- やっちゃん誕生日会 参加予約
-</div>
+<header>やっちゃん誕生日会 参加予約</header>
 
 <div class="container">
 
-<h3>2025年12月30日(火)</h3>
-<p>やっちゃん誕生日会／参加時間帯を選んでください</p>
+<div class="title">2025年12月30日(火)</div>
 
-<!-- 予約枠 -->
-<div class="time-box">
-  <div class="left">
-    <div class="statusmark" style="color:#2196f3;">〇</div>
-    18:00〜
-  </div>
-  <input type="radio" name="slot" value="18:00">
+<p>参加する時間帯を選択してください。</p>
+
+<!-- ---- 6枠 ---- -->
+<div class="slot">
+<div>18:00〜</div>
+<div class="status">⭕</div>
+<input type="radio" name="time" value="18:00">
 </div>
 
-<div class="time-box">
-  <div class="left">
-    <div class="statusmark" style="color:#2196f3;">〇</div>
-    18:20〜
-  </div>
-  <input type="radio" name="slot" value="18:20">
+<div class="slot">
+<div>18:20〜</div>
+<div class="status">⭕</div>
+<input type="radio" name="time" value="18:20">
 </div>
 
-<div class="time-box">
-  <div class="left">
-    <div class="statusmark" style="color:#ff9800;">△</div>
-    18:40〜
-  </div>
-  <input type="radio" name="slot" value="18:40">
+<div class="slot">
+<div>18:40〜</div>
+<div class="status">△</div>
+<input type="radio" name="time" value="18:40">
 </div>
 
-<div class="time-box">
-  <div class="left">
-    <div class="statusmark" style="color:#ff9800;">△</div>
-    19:00〜
-  </div>
-  <input type="radio" name="slot" value="19:00">
+<div class="slot">
+<div>19:00〜</div>
+<div class="status">△</div>
+<input type="radio" name="time" value="19:00">
 </div>
 
-<div class="time-box unavailable">
-  <div class="left">
-    <div class="statusmark" style="color:#d32f2f;">×</div>
-    19:20〜
-  </div>
-  <input type="radio" disabled>
+<div class="slot">
+<div>19:20〜</div>
+<div class="status">❌</div>
+<input type="radio" disabled>
 </div>
 
-<div class="time-box unavailable">
-  <div class="left">
-    <div class="statusmark" style="color:#d32f2f;">×</div>
-    19:40〜
-  </div>
-  <input type="radio" disabled>
+<div class="slot">
+<div>19:40〜</div>
+<div class="status">❌</div>
+<input type="radio" disabled>
 </div>
 
-<button class="bigbtn" onclick="reserve()">この時間で参加する →</button>
+<button class="reserve" onclick="reserve()">この時間で参加する →</button>
 
 </div>
 
 
-<!-- モーダル -->
-<div class="overlay" id="overlay">
-  <div class="popup" id="popupText">
-      読み込み中…
-  </div>
+<!-- ====== モーダル ====== -->
+<div class="modal-bg" id="modal">
+<div class="modal-box" id="modalBox">
+<p id="modalText">処理中...</p>
+<button class="close-btn" onclick="closeModal()">とじる</button>
 </div>
-
-
+</div>
 
 
 <script>
 
-function reserve(){
+function reserve() {
 
-    let sel = document.querySelector("input[name='slot']:checked");
-    if(!sel){
-        alert("参加時間を選択してください。");
+    const select = document.querySelector('input[name="time"]:checked');
+
+    if(!select){
+        alert("時間帯を選択してください");
         return;
     }
 
-    document.getElementById("overlay").style.display="block";
+    document.getElementById("modal").style.display="flex";
+    document.getElementById("modalText").innerHTML="アクセス集中中...<br>順番にご案内しております";
 
-    document.getElementById("popupText").innerHTML =
-        "<h3>処理中…</h3><p>通信が混雑しています…</p>";
+    /* ーーー 予約結果判定（本物っぽい確率設定）ーーー
+       成功 4%
+       混雑失敗 54%
+       システムエラー 42%
+    */
 
     setTimeout(()=>{
-        
-        let r = Math.random()*100;
 
-        if(r<2){
-            document.getElementById("popupText").innerHTML =
-            "<h3>＜空き枠先着＞</h3>誕生日会の参加予約が<br>確定しました！<br><br><button class='closebtn' onclick='closePop()'>とじる</button>";
+        const r = Math.random()*100;
+
+        if(r < 4){
+            document.getElementById("modalText").innerHTML =
+            "＜ 空き枠先着 ＞<br>誕生日会の参加予約が<br>確定しました！";
         }
-        else if(r<27){
-            document.getElementById("popupText").innerHTML =
-            "定員を超えたため<br>この時間帯は予約できませんでした<br><br><button class='closebtn' onclick='closePop()'>とじる</button>";
+        else if(r < 58){
+            document.getElementById("modalText").innerHTML =
+            "＜ 空き枠先着 ＞<br>誕生日会の参加予約が<br>確保できませんでした";
         }
-        else if(r<52){
-            document.getElementById("popupText").innerHTML =
-            "誕生日会の参加予約が<br>確保できませんでした<br><br><button class='closebtn' onclick='closePop()'>とじる</button>";
-        }
-        else if(r<77){
-            document.getElementById("popupText").innerHTML =
-            "システムエラーが発生しました<br><br><button class='closebtn' onclick='closePop()'>とじる</button>";
-        }
-        else{
-            document.getElementById("popupText").innerHTML =
-            "現在アクセスが集中しています<br><br><button class='closebtn' onclick='closePop()'>とじる</button>";
+        else {
+            document.getElementById("modalText").innerHTML =
+            "エラーが発生しました<br>処理を中断しました。<br><br>(E_SW_GP_DL_999_900_1)";
         }
 
-    },4000);
+    }, 3800); // ← 本気でイライラする待ち時間（約4秒）
 
 }
 
-function closePop(){
-    document.getElementById("overlay").style.display="none";
+function closeModal(){
+    document.getElementById("modal").style.display="none";
 }
 
 </script>
