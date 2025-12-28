@@ -8,91 +8,146 @@
 <style>
 body{
     font-family:"Yu Gothic","メイリオ",sans-serif;
-    background:#f2f4f8;
+    background:#ffffff;
     margin:0;
 }
 
+/* ---- HEADER ---- */
 header{
     background:#005bac;
     color:white;
-    padding:10px 20px;
+    padding:12px 18px;
     font-size:18px;
     font-weight:bold;
 }
 
-/* メイン */
-.container{
-    max-width:700px;
-    margin:40px auto;
-    background:white;
-    border-radius:10px;
+/* ---- CONTAINER ---- */
+.wrapper{
+    max-width:800px;
+    margin:0 auto;
     padding:20px;
 }
 
-/* 見出し */
-.title{
+/* BOX */
+.box{
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:18px;
+    background:#fff;
+}
+
+/* タイトル */
+.dateTitle{
     font-size:18px;
     font-weight:bold;
 }
 
-/* ---- 時間帯ボックス ---- */
+.subText{
+    font-size:12px;
+    color:#666;
+}
+
+/* ---- SLOT ---- */
 .slot{
     display:flex;
-    justify-content:space-between;
     align-items:center;
+    justify-content:space-between;
     border:1px solid #ddd;
-    border-radius:10px;
-    padding:13px;
-    margin-top:8px;
+    border-radius:8px;
+    padding:12px 12px 12px 10px;
+    margin-top:10px;
     background:#fafafa;
 }
 
-.slot input{
-    transform:scale(1.4);
+.left{
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
-/* ○ △ × */
+.slot input{
+    transform:scale(1.3);
+}
+
+.time{
+    font-size:15px;
+}
+
 .status{
     font-size:22px;
 }
 
-/* 予約ボタン */
-.reserve{
-    width:100%;
-    margin-top:25px;
-    padding:15px;
-    font-size:16px;
-    color:white;
-    background:#d80000;
-    border:none;
-    border-radius:10px;
+/* 選択ガイド（○△×） */
+.legendBox{
+    margin-top:12px;
+    padding:8px;
+    border-top:1px dashed #ccc;
+    display:flex;
+    gap:18px;
+    font-size:13px;
 }
 
-/* ===== モーダル ===== */
-.modal-bg{
+/* ---- 選択結果エリア ---- */
+.selectedBox{
+    margin-top:18px;
+    padding:12px;
+    border-radius:6px;
+    background:#fdecec;
+    border:1px solid #ff9e9e;
+    text-align:center;
+    font-weight:bold;
+}
+
+/* ---- ボタン ---- */
+.reserveBtn{
+    width:100%;
+    margin-top:12px;
+    background:#d80000;
+    border:none;
+    color:white;
+    padding:16px;
+    border-radius:12px;
+    font-size:16px;
+}
+
+/* ---- 下のグレー枠 ---- */
+.bottomNote{
+    margin-top:12px;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    background:#fafafa;
+}
+
+.bottomNote span{
+    color:red;
+}
+
+/* ---- MODAL ---- */
+.modalBg{
     display:none;
     position:fixed;
     top:0;left:0;
     width:100%;height:100%;
-    background:rgba(0,0,0,0.7);
+    background:rgba(0,0,0,0.75);
     justify-content:center;
     align-items:center;
 }
 
-.modal-box{
+.modalBox{
+    width:360px;
     background:white;
-    width:380px;
-    padding:25px;
-    text-align:center;
     border-radius:10px;
+    padding:20px;
+    text-align:center;
 }
 
-.close-btn{
-    margin-top:25px;
-    padding:10px;
+.closeBtn{
     width:90%;
-    border:1px solid black;
+    margin-top:15px;
+    padding:10px;
     border-radius:8px;
+    border:1px solid #333;
 }
 </style>
 </head>
@@ -101,88 +156,115 @@ header{
 
 <header>やっちゃん誕生日会 参加予約</header>
 
-<div class="container">
+<div class="wrapper">
+<div class="box">
 
-<div class="title">2025年12月30日(火)</div>
-<p>参加する時間帯を選択してください。</p>
+<div class="dateTitle">2025年12月30日(火)</div>
+<div class="subText">12月30日 やっちゃん誕生日会／参加時間帯を選んでください</div>
 
-<div id="slots"></div>
+<div id="slotArea"></div>
 
-<button class="reserve" onclick="reserve()">この時間で参加する →</button>
-
+<div class="legendBox">
+    <div>⭕ 空きあり</div>
+    <div>△ 少し混雑</div>
+    <div>❌ 満員（予約不可）</div>
 </div>
 
-<!-- モーダル -->
-<div class="modal-bg" id="modal">
-    <div class="modal-box">
-        <p id="modalText">処理中...</p>
-        <button class="close-btn" onclick="closeModal()">とじる</button>
+<div class="selectedBox" id="selectedText">
+未選択
+</div>
+
+<button class="reserveBtn" onclick="reserve()">この時間で参加する →</button>
+
+<div class="bottomNote">
+<span>・</span> 他のイベントの選択にもどる
+</div>
+
+</div>
+</div>
+
+
+<!-- ===== MODAL ===== -->
+<div class="modalBg" id="modal">
+    <div class="modalBox">
+        <div id="modalText">処理中です…</div>
+        <button class="closeBtn" onclick="closeModal()">とじる</button>
     </div>
 </div>
 
 
 <script>
-/* ========= 8枠時間帯 ========= */
+/* ========== 時間帯(本家風8枠固定) ========== */
 const times = [
  "18:00〜","18:20〜","18:40〜","19:00〜",
  "19:20〜","19:40〜","20:00〜","20:20〜"
 ];
 
-/* ========= ○ △ × をランダム配置 ========= */
-function createSlots(){
-    const area = document.getElementById("slots");
-    area.innerHTML="";
+let selected = "";
+
+/* ========== 本家っぽい割合で ○△× をランダム ======== */
+/* ○ = 35%  △ = 35%  × = 30% */
+function drawSlots(){
+    const area = document.getElementById("slotArea");
+    area.innerHTML = "";
 
     times.forEach(t=>{
-        let r = Math.random()*100;
-        let icon = "⭕";
-        let disable = "";
+        const r = Math.random()*100;
+        let mark="⭕";
+        let disable="";
 
-        if(r < 30){ icon="❌"; disable="disabled"; }
-        else if(r < 65){ icon="△"; }
+        if(r < 30){ mark="❌"; disable="disabled"; }
+        else if(r < 65){ mark="△"; }
 
         area.innerHTML += `
         <div class="slot">
-            <div>${t}</div>
-            <div class="status">${icon}</div>
-            <input type="radio" name="time" value="${t}" ${disable}>
+            <div class="left">
+                <input type="radio" name="time" value="${t}" ${disable} onclick="setSelect('${t}')">
+                <div class="time">${t}</div>
+            </div>
+            <div class="status">${mark}</div>
         </div>`;
     })
 }
 
-createSlots();
+drawSlots();
 
-/* ========= 予約処理 ========= */
+/* ========== 選択表示 ========== */
+function setSelect(t){
+    selected=t;
+    document.getElementById("selectedText").innerText = "選択中：" + t;
+}
+
+/* ========== 予約処理 ========== */
 function reserve(){
 
-    const select = document.querySelector('input[name="time"]:checked');
-    if(!select){
+    if(!selected){
         alert("時間帯を選択してください");
         return;
     }
 
-    document.getElementById("modal").style.display="flex";
-    document.getElementById("modalText").innerHTML=
-        "アクセス集中中です…<br>順番にご案内しております";
+    const modal=document.getElementById("modal");
+    modal.style.display="flex";
+    document.getElementById("modalText").innerHTML =
+        "アクセスが集中しています…<br>順番に処理しています";
 
-    /* EXPO風の確率感 */
     setTimeout(()=>{
-        let r = Math.random()*100;
+        const r=Math.random()*100;
 
-        if(r < 4){
+        if(r<4){
             document.getElementById("modalText").innerHTML =
             "＜ 空き枠先着 ＞<br>誕生日会の参加予約が<br>確定しました！";
         }
-        else if(r < 58){
+        else if(r<58){
             document.getElementById("modalText").innerHTML =
-            "＜ 空き枠先着 ＞<br>誕生日会の参加予約が<br>確保できませんでした";
+            "＜ 空き枠先着 ＞<br>誕生日会の参加予約を<br>確保できませんでした";
         }
         else{
             document.getElementById("modalText").innerHTML =
-            "エラーが発生しました<br>処理を中断しました。<br><br>(E_SW_GP_DL_999_900_1)";
+            "エラーが発生しました<br>処理を中断しました<br><br>(E_SW_GP_DL_999_900_1)";
         }
 
-    }, 3800); // ← EXPO風イライラ待ち
+    },3800);
 }
 
 function closeModal(){
