@@ -1,197 +1,257 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>当日登録（やっちゃん誕生会）</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>当日登録（飲み会）</title>
 
 <style>
+
 body{
-  background:#f6f6f6;
-  margin:0;
-  font-family:"Yu Gothic","Helvetica",sans-serif;
+    margin:0;
+    background:#f3f5f7;
+    font-family: "ヒラギノ角ゴ ProN","メイリオ","Arial",sans-serif;
 }
 
-/* 万博風ヘッダー */
 .header{
-  background:#0068b7;
-  color:white;
-  font-size:18px;
-  padding:14px 16px;
-  font-weight:bold;
+    background:#005bac;
+    color:white;
+    padding:12px 18px;
+    font-size:18px;
+    font-weight:bold;
 }
 
-/* コンテンツ */
-.box{
-  background:white;
-  width:90%;
-  max-width:900px;
-  margin:20px auto;
-  border-radius:10px;
-  padding:18px;
+.container{
+    width:80%;
+    max-width:900px;
+    margin:40px auto;
+    background:white;
+    border-radius:10px;
+    padding:25px;
 }
 
-/* 選択肢 UI */
-.slot{
-  border:1px solid #ddd;
-  padding:18px;
-  border-radius:8px;
-  margin:10px 0;
-  cursor:pointer;
-  display:flex;
-  justify-content:space-between;
-}
-.slot:hover{
-  border:1px solid #0068b7;
+.title{
+    font-size:18px;
+    font-weight:bold;
 }
 
-/* 赤ボタン */
-.btn{
-  background:#d7000f;
-  color:white;
-  text-align:center;
-  padding:18px;
-  margin-top:20px;
-  border-radius:6px;
-  font-size:18px;
+.info{
+    font-size:13px;
+    margin-top:3px;
 }
 
-/* 共通モーダル背景 */
-.modal-mask{
+.time-box{
+    margin-top:18px;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+.option{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px;
+    border-bottom:1px solid #ddd;
+    cursor:pointer;
+}
+
+.option:last-child{
+    border-bottom:none;
+}
+
+.option input{
+    transform:scale(1.4);
+}
+
+.status{
+    color:#666;
+}
+
+.reserve-btn{
+    width:100%;
+    background:#d7000f;
+    color:white;
+    border:none;
+    padding:16px;
+    font-size:18px;
+    margin-top:25px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.reserve-btn:hover{
+    opacity:0.9;
+}
+
+
+/* モーダル共通 */
+.modal{
+  display:none;
   position:fixed;
   top:0; left:0;
   width:100%; height:100%;
-  background:rgba(0,0,0,0.55);
-  display:none;
+  background:rgba(0,0,0,0.45);
   justify-content:center;
   align-items:center;
+  z-index:9999;
 }
 
-/* ＝＝＝＝＝＝＝ 失敗モーダル（万博風）＝＝＝＝＝＝＝ */
-.modal{
+.modal-box{
   background:white;
-  width:88%;
-  max-width:500px;
-  border-radius:14px;
-  padding:18px;
+  padding:30px;
+  border-radius:10px;
+  width:320px;
   text-align:center;
+  font-size:17px;
 }
-.modal-title{
-  font-size:22px;
-  font-weight:bold;
+
+.close-btn{
+  width:100%;
+  padding:12px;
+  margin-top:18px;
+  border:1px solid #555;
+  border-radius:8px;
+  background:white;
+  cursor:pointer;
+}
+
+.loading-icon{
+  font-size:40px;
   margin-bottom:10px;
 }
-.modal-text{
-  color:#333;
-  margin:15px 0;
-}
-.close-btn{
-  border:2px solid #333;
-  padding:14px;
-  border-radius:6px;
-  margin-top:14px;
-}
 
-/* ＝＝＝＝＝＝＝ 成功モーダル（画像準拠デザイン）＝＝＝＝＝＝＝ */
-.success-box{
-  background:white;
-  width:88%;
-  max-width:500px;
-  border-radius:14px;
-  border:2px solid #000;
-  padding:20px;
-}
-.success-title{
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:6px;
-}
-.success-text{
-  font-size:14px;
-  margin:14px 0;
-}
 </style>
+
 </head>
 
 <body>
 
-<div class="header">当日登録（やっちゃん誕生会）</div>
+<div class="header">
+    当日登録（飲み会）
+</div>
 
-<div class="box">
-  <b>2025年12月30日(火)</b><br>
-  参加人数：未入力
+<div class="container">
 
-  <div class="slot">18:00〜 <span>空きあり</span></div>
-  <div class="slot">18:30〜 <span>やや混雑</span></div>
-  <div class="slot">19:00〜 <span>満席</span></div>
-  <div class="slot">二次会から参加 <span>不安定</span></div>
+    <div class="title">2025年11月飲み会</div>
+    <div class="info">開催日：2025年11月23日(日)</div>
+    <div class="info">参加人数：1名</div>
 
-  <div class="btn" onclick="tryReservation()">この時間で参加する →</div>
+    <div class="time-box">
+
+        <label class="option">
+            <div>
+                <input type="radio" name="time" value="18:00">
+                18:00〜
+            </div>
+            <div class="status">空きあり</div>
+        </label>
+
+        <label class="option">
+            <div>
+                <input type="radio" name="time" value="18:30">
+                18:30〜
+            </div>
+            <div class="status">やや混雑</div>
+        </label>
+
+        <label class="option">
+            <div>
+                <input type="radio" name="time" value="19:00">
+                19:00〜
+            </div>
+            <div class="status">満席</div>
+        </label>
+
+        <label class="option">
+            <div>
+                <input type="radio" name="time" value="二次会">
+                二次会から参加
+            </div>
+            <div class="status">不安定</div>
+        </label>
+
+    </div>
+
+    <button class="reserve-btn" onclick="startReservation()">
+        この時間で参加する →
+    </button>
+
 </div>
 
 
-<!-- 失敗モーダル -->
-<div class="modal-mask" id="errorModal">
-  <div class="modal">
-    <div class="modal-title">ご確認ください</div>
-
-    <div class="modal-text">
-      操作が完了できませんでした。<br><br>
-      現在非常にアクセスが集中しております。<br>
-      申し訳ございませんが時間をおいて再度お試しください。<br><br>
-
-      ・ページを更新しても順番は維持されません<br>
-      ・選択いただいた内容はリセットされる可能性があります<br><br>
-
-      （エラーコード：E_SW_GP_DL_999）
-    </div>
-
-    <div class="close-btn" onclick="closeError()">とじる</div>
+<!-- 処理中 -->
+<div id="loadingModal" class="modal">
+  <div class="modal-box">
+      <div class="loading-icon">⏳</div>
+      通信中です<br>しばらくお待ちください
   </div>
 </div>
 
 
-<!-- 成功モーダル -->
-<div class="modal-mask" id="successModal">
-  <div class="success-box">
-    <div class="success-title">＜ 空き枠先着 ＞</div>
+<!-- 成功 -->
+<div id="successModal" class="modal">
+  <div class="modal-box">
+    ＜空き枠先着＞
+    <br><br>
+    パビリオン/イベントが<br>
+    予約されました
+    <br><br>
+    <button class="close-btn" onclick="closeModal('successModal')">とじる</button>
+  </div>
+</div>
 
-    <div class="success-text">
-      パビリオン／イベントが予約されました
-    </div>
 
-    <div style="font-size:16px; margin:10px 0;">
-      やっちゃん誕生会<br>
-      18:30〜
-    </div>
-
-    <div class="close-btn" onclick="closeSuccess()">とじる</div>
+<!-- 失敗 -->
+<div id="errorModal" class="modal">
+  <div class="modal-box">
+    定員を超えたため、<br>
+    ご希望の時間帯は選択できませんでした
+    <br><br>
+    お手数ですが、<br>
+    来場日時を再度選択してください。
+    <br><br>
+    <button class="close-btn" onclick="closeModal('errorModal')">とじる</button>
   </div>
 </div>
 
 
 <script>
-function tryReservation(){
 
-  // ★ 成功率 2%
-  let successRate = 0.02;
+function startReservation(){
 
-  if(Math.random() < successRate){
-      document.getElementById("successModal").style.display="flex";
-  }else{
-      document.getElementById("errorModal").style.display="flex";
-  }
+    const checked = document.querySelector('input[name="time"]:checked');
+
+    if(!checked){
+        alert("時間帯を選択してください。");
+        return;
+    }
+
+    document.getElementById("loadingModal").style.display="flex";
+
+    const wait = Math.floor(Math.random()*3000)+3000;
+
+    setTimeout(()=>{
+
+        document.getElementById("loadingModal").style.display="none";
+
+        // 成功率 2%
+        if(Math.random() < 0.02){
+            document.getElementById("successModal").style.display="flex";
+        } else {
+            document.getElementById("errorModal").style.display="flex";
+        }
+
+    },wait);
 }
 
-function closeError(){
-  document.getElementById("errorModal").style.display="none";
+
+function closeModal(id){
+    document.getElementById(id).style.display="none";
 }
 
-function closeSuccess(){
-  document.getElementById("successModal").style.display="none";
-}
 </script>
 
 </body>
 </html>
+
