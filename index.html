@@ -6,317 +6,268 @@
 
 <style>
 body{
-  font-family: Arial, "游ゴシック", Meiryo;
+  font-family: "Yu Gothic","Segoe UI",-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#f2f4f7;
   margin:0;
-  background:#f4f6fb;
 }
 
-/* ---------------------- メイン画面 ---------------------- */
-#mainPage{
-  max-width:800px;
-  margin:0 auto;
-  padding:30px;
-}
-
-.title{
-  font-size:20px;
+/* --- EXPO風ヘッダー --- */
+.header{
+  background:#005bac;
+  color:#fff;
+  padding:10px 18px;
+  font-size:18px;
   font-weight:bold;
 }
 
-.timeBox{
+/* --- コンテナ --- */
+.box{
+  width:850px;
+  margin:30px auto;
+  background:#fff;
+  border-radius:8px;
+  padding:22px 30px 35px 30px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* --- 見出し --- */
+.title{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+/* --- 時間帯リスト --- */
+.timeRow{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  background:#fff;
   border:1px solid #ddd;
-  padding:16px;
+  padding:14px;
   margin-top:8px;
   border-radius:6px;
 }
 
-.iconBlue{color:#007bff;font-size:20px;}
-.iconYellow{color:#e6b800;font-size:20px;}
-.iconRed{color:#d60000;font-size:20px;}
-
-.radioArea input{
-  transform:scale(1.3);
+.icon{
+  width:30px;
+  font-size:20px;
+  font-weight:bold;
 }
 
-.reserveBtn{
-  width:100%;
-  background:#e4002b;
-  color:#fff;
-  font-size:18px;
-  padding:18px;
-  border:none;
-  border-radius:4px;
-  margin-top:20px;
-  cursor:pointer;
-}
+.circle{ color:#0094ff; }
+.tri{ color:#e0b000; }
+.cross{ color:#ff0033; }
 
-/* ---------------------- 待機画面 ---------------------- */
-#queuePage{
-  display:none;
-  padding:25px;
-  text-align:center;
-}
-
-.queueBox{
-  max-width:650px;
-  margin:0 auto;
-  background:#fff;
-  border-radius:10px;
-  padding:25px;
-}
-
-#bar{
-  width:100%;
-  background:#ddd;
-  height:22px;
-  border-radius:6px;
-}
-#barFill{
-  width:0%;
-  height:22px;
-  background:#00aa55;
-  border-radius:6px;
-}
-
-/* ---------------------- 結果モーダル ---------------------- */
-.modalBase{
-  display:none;
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.6);
-}
-
-.modalBox{
-  background:#fff;
-  max-width:450px;
-  margin:120px auto;
-  padding:25px;
-  border-radius:10px;
-  text-align:center;
-}
-
-.modalBtn{
-  margin-top:25px;
-  padding:12px;
-  width:70%;
+.timeText{
+  flex:1;
   font-size:16px;
 }
+
+.sel input{
+  width:18px;
+  height:18px;
+}
+
+/* --- 下部のボタン --- */
+.notice{
+  background:#ffecec;
+  padding:12px;
+  margin-top:20px;
+  border:1px solid #ffbbbb;
+  text-align:center;
+}
+
+.bottomBtn{
+  background:#d6000f;
+  color:white;
+  padding:14px;
+  text-align:center;
+  border-radius:4px;
+  margin-top:16px;
+  cursor:pointer;
+  font-size:16px;
+}
+
+/* --- モーダル（EXPO風） --- */
+.modalCover{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.75);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  visibility:hidden;
+}
+
+.modal{
+  width:380px;
+  background:#fff;
+  padding:24px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.modal x{
+  float:right;
+}
+
+.bigok{
+  font-size:17px;
+  margin-top:10px;
+}
+
+/* --- 順番待ち画面 --- */
+.queue{
+  text-align:center;
+}
+
+.bar{
+  width:92%;
+  height:22px;
+  background:#ccc;
+  margin:14px auto;
+  border-radius:8px;
+  overflow:hidden;
+}
+.fill{
+  height:100%;
+  width:0%;
+  background:#1fae4a;
+}
+
 </style>
 </head>
 
-
 <body>
 
-<!-- ========================= メイン画面 ========================= -->
-<div id="mainPage">
+<div class="header">やっちゃん誕生日会 参加予約</div>
 
-  <div class="title">2025年12月30日(火)</div>
-  <p>12月30日 やっちゃん誕生日会 参加時間帯を選んでください</p>
+<div class="box">
 
-  <!-- 8枠 -->
-  <div id="timeList"></div>
+<div class="title">2025年12月30日 (火)</div>
 
-  <button id="reserveBtn" class="reserveBtn">この時間で参加する →</button>
+<div id="list"></div>
+
+<div class="notice">○ … 空きあり　　△ … 少し混雑　　× … 満員（予約不可）</div>
+
+<div class="bottomBtn" onclick="reserve()">この時間で参加する →</div>
 
 </div>
 
 
-
-
-<!-- ========================= 待機画面 ========================= -->
-<div id="queuePage">
-  <div class="queueBox">
-    <h2>順番にご案内しております。</h2>
-    <p>現在サイトが大変混雑しております。<br>
-    順番が来るまでしばらくお待ちください。</p>
-
-    <div id="bar"><div id="barFill"></div></div>
-
-    <p style="margin-top:10px;">
-      ご自身の前に並んでいる人数：
-      <span id="remain">480</span> 人
-    </p>
-
-    <p>推定待ち時間：
-      <span id="timeLeft">10</span> 秒
-    </p>
-
-    <p style="font-size:12px;color:#555;">
-      ※ このページを閉じても順番は維持されません（嘘ですが演出です）
-    </p>
+<!-- 成功 / 失敗モーダル -->
+<div class="modalCover" id="modalCover">
+  <div class="modal" id="modalBox">
+    <div id="modalText"></div>
+    <div style="margin-top:18px;">
+      <div class="bottomBtn" onclick="closeModal()" style="width:200px;margin:auto;">
+        とじる
+      </div>
+    </div>
   </div>
 </div>
 
 
+<!-- 順番待ちページ -->
+<div class="modalCover" id="queuePage">
+  <div class="modal queue">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Expo_2025_logo.svg/512px-Expo_2025_logo.svg.png" width="140"><br>
+    <b>順番にご案内しております。</b><br><br>
+    現在サイトが大変混雑しております。<br>
+    しばらくそのままでお待ちください。<br><br>
 
+    <div class="bar"><div class="fill" id="fillBar"></div></div>
 
-<!-- ========================= 結果モーダル ========================= -->
-<div id="modal" class="modalBase">
-  <div class="modalBox">
-    <h3 id="modalTitle"></h3>
-    <p id="modalMsg"></p>
-    <button class="modalBtn" onclick="closeModal()">とじる</button>
+    <div id="queueMsg">待ち時間目安：数秒</div>
   </div>
 </div>
-
-
-
-
-
-
-
-
 
 
 <script>
-/* ------------------------------------------------
-      ○ △ × をランダムに生成
------------------------------------------------- */
-const timeData = [
+let times = [
 "18:00〜","18:20〜","18:40〜","19:00〜",
 "19:20〜","19:40〜","20:00〜","20:20〜"
 ];
 
-const timeList = document.getElementById("timeList");
+function r(){
+ let n = Math.random();
+ return n<0.33?"○":n<0.66?"△":"×";
+}
 
-timeData.forEach((t,i)=>{
-  const box = document.createElement("div");
-  box.className="timeBox";
-
-  const state = Math.random();
-
-  let icon="";
-  if(state < 0.4) icon=`<span class="iconBlue">○</span>`;
-  else if(state < 0.75) icon=`<span class="iconYellow">△</span>`;
-  else icon=`<span class="iconRed">×</span>`;
-
-  box.innerHTML=`
-    <div>${icon}</div>
-    <div>${t}</div>
-    <div class="radioArea">
-      <input type="radio" name="time" value="${t}">
-    </div>
+function draw(){
+ let h="";
+ times.forEach((t,i)=>{
+  let mark = r();
+  let cls = mark=="○"?"circle":mark=="△"?"tri":"cross";
+  let disable = mark=="×"?"disabled":"";
+  h += `
+  <div class="timeRow">
+    <div class="icon ${cls}">${mark}</div>
+    <div class="timeText">${t}</div>
+    <div class="sel"><input name="t" type="radio" ${disable}></div>
+  </div>
   `;
+ });
+ document.getElementById("list").innerHTML=h;
+}
 
-  timeList.appendChild(box);
-});
+draw();
 
 
+// --------------------
+// 予約ボタン
+// --------------------
+function reserve(){
 
+  let r = Math.random();
 
-/* ------------------------------------------------
-      予約ボタン
------------------------------------------------- */
-document.getElementById("reserveBtn").addEventListener("click",()=>{
-
-  const checked = document.querySelector("input[name='time']:checked");
-  if(!checked){
-    showModal("未選択","時間帯を選択してください");
+  // 10% → 強制的に「順番待ち画面」
+  if(r<0.10){
+    queue();
     return;
   }
 
-  /* ★ 30% の確率で強制待機画面へ移動 */
-  if(Math.random() < 0.30){
-      startQueue();
-      return;
-  }
+  document.getElementById("modalCover").style.visibility="visible";
+  document.getElementById("modalText").innerHTML=
+  "しばらくお待ちください…<br><br>処理をしています。";
 
+  // EXPO風 → 無駄に遅い
   setTimeout(()=>{
-      decideResult();
-  },3000);
+    let result = Math.random();
 
-});
-
-
-
-
-/* ------------------------------------------------
-      待機画面
------------------------------------------------- */
-function startQueue(){
-
-  document.getElementById("mainPage").style.display="none";
-  document.getElementById("queuePage").style.display="block";
-
-  let remain = 480;
-  let time = 10;
-  let width = 0;
-
-  const remainDom=document.getElementById("remain");
-  const timeDom=document.getElementById("timeLeft");
-  const barFill=document.getElementById("barFill");
-
-  const timer=setInterval(()=>{
-
-    remain -= Math.floor(Math.random()*40)+10;
-    if(remain<0) remain=0;
-
-    width +=10;
-    if(width>100) width=100;
-
-    time--;
-
-    remainDom.textContent=remain;
-    timeDom.textContent=time;
-    barFill.style.width=width+"%";
-
-    if(time<=0){
-      clearInterval(timer);
-      finishQueue();
+    if(result<0.25){
+      // 失敗
+      document.getElementById("modalText").innerHTML=
+      "<b>＜ 空き枠先着 ＞</b><br><br>誕生日会の参加予約が<br>確保できませんでした…<br><br>お手数ですが再度お試しください";
+    }else{
+      // 成功
+      document.getElementById("modalText").innerHTML=
+      "<b>＜ 空き枠先着 ＞</b><br><br>誕生日会の参加予約が<br><span class='bigok'>確定しました！</span><br><br>集合時間：19:40〜";
     }
 
-  },1000);
-}
-
-function finishQueue(){
-  document.getElementById("queuePage").style.display="none";
-  document.getElementById("mainPage").style.display="block";
-
-  setTimeout(()=>{
-      decideResult();
-  },2000);
-}
-
-
-
-
-/* ------------------------------------------------
-      成功 / 失敗 / エラー抽選
------------------------------------------------- */
-function decideResult(){
-
-  const r = Math.random();
-
-  if(r < 0.20){
-      showModal("エラーが発生しました","処理を中断しました。(E_SW_GP_DL_004)");
-  }
-  else if(r < 0.55){
-      showModal("＜空き枠先着＞","誕生日会の参加予約が確定しました！");
-  }
-  else{
-      showModal("＜空き枠先着＞","残念ながら確保できませんでした。再度お試しください。");
-  }
-}
-
-
-
-
-/* ------------------------------------------------
-      モーダル
------------------------------------------------- */
-function showModal(title,msg){
-  document.getElementById("modalTitle").innerText=title;
-  document.getElementById("modalMsg").innerText=msg;
-  document.getElementById("modal").style.display="block";
+  },2500);
 }
 
 function closeModal(){
-  document.getElementById("modal").style.display="none";
+ document.getElementById("modalCover").style.visibility="hidden";
+ draw();
+}
+
+
+// --------------------
+// 順番待ち
+// --------------------
+function queue(){
+ document.getElementById("queuePage").style.visibility="visible";
+
+ let fill = 0;
+ let timer = setInterval(()=>{
+   fill += 5;
+   document.getElementById("fillBar").style.width=fill+"%";
+   if(fill>=100){
+     clearInterval(timer);
+     document.getElementById("queuePage").style.visibility="hidden";
+   }
+ },220);
 }
 </script>
 
