@@ -47,9 +47,10 @@ body{
   font-weight:bold;
 }
 
-/* ←ここが修正版（統一フォントサイズ） */
+/* ← 本家寄せ 最終調整 */
 .ok,.warn,.ng{
-  font-size:22px;
+  font-size:18px;
+  line-height:18px;
 }
 .ok{ color:#3090ff;}
 .warn{ color:#d4a000;}
@@ -98,36 +99,23 @@ body{
   background:white;
 }
 
-.waitScreen{
-  display:none;
-  text-align:center;
-  color:white;
-  background:#333;
-  padding:40px;
-}
-
-.errorPage{
-  display:none;
-  text-align:center;
-  padding:40px;
-}
-
-/* QR風ページ */
+/* QRページ */
 .qrScreen{
   display:none;
   text-align:center;
   padding:40px;
 }
 
+/* もっとQRっぽく */
 .qrBox{
   width:240px;
   height:240px;
   margin:20px auto;
   background:
-    repeating-linear-gradient(90deg,#000 0 10px,#fff 10px 20px),
-    repeating-linear-gradient(#000 0 10px,#fff 10px 20px);
+    repeating-linear-gradient(90deg,#000 0 12px,#fff 12px 24px),
+    repeating-linear-gradient(#000 0 12px,#fff 12px 24px);
   background-blend-mode:multiply;
-  border:8px solid #000;
+  border:10px solid #000;
 }
 </style>
 </head>
@@ -139,7 +127,6 @@ body{
 <div class="title">2025年12月30日(火)</div>
 <div class="sub">やっちゃん誕生日会 参加時間帯を選んでください</div>
 
-<!-- 8枠固定 -->
 <div class="slot">
 <span class="icon ok">○</span>
 <input type="radio" name="time" value="18:00">18:00〜
@@ -185,13 +172,7 @@ body{
 </div>
 </div>
 
-<!-- ▼ 待機画面 -->
-<div id="waitScreen" class="waitScreen">
-<h2>順番にご案内しております。</h2>
-<p>現在サイトが大変混雑しております。<br>しばらくお待ちください…</p>
-</div>
-
-<!-- ▼ 予約成功モーダル -->
+<!-- 成功モーダル -->
 <div id="success" class="modalBg">
 <div class="modal">
 <div class="big-text">
@@ -204,14 +185,14 @@ body{
 
 <p style="font-size:12px;margin-top:10px;">
 このあとQRコードが表示されます。<br>
-スクリーンショットを撮影し、当日入口で提示してください。
+スクリーンショットして、当日入口で提示してください。
 </p>
 
 <button onclick="closeAll()">とじる</button>
 </div>
 </div>
 
-<!-- ▼ QR画面 -->
+<!-- QR画面 -->
 <div id="qr" class="qrScreen">
 <h2>入場用QRコード</h2>
 <div class="qrBox"></div>
@@ -234,7 +215,6 @@ btn.addEventListener("click", ()=>{
  btn.style.opacity = "0.6";
  btn.style.pointerEvents = "none";
 
- // 今は成功100%
  setTimeout(()=>{
    showSuccess(checked.value);
  },3000);
