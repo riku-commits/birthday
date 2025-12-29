@@ -76,7 +76,7 @@ body{
   background:white;
   padding:25px;
   border-radius:10px;
-  width:340px;
+  width:360px;
   text-align:center;
 }
 
@@ -86,24 +86,27 @@ body{
   line-height:35px;
 }
 
-.qrBox{
-  width:220px;
-  height:220px;
-  margin:18px auto;
-  background:#111;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+/* ▼ QRコード風デザイン強化 */
+.qrOuter{
+  padding:15px;
+  border:3px solid #111;
+  display:inline-block;
+  margin-top:10px;
 }
 
-.modal button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:1px solid #333;
-  border-radius:6px;
-  background:white;
+.qrBox{
+  width:240px;
+  height:240px;
+  background-image: radial-gradient(#000 30%, transparent 31%),
+                    radial-gradient(#000 30%, transparent 31%);
+  background-size: 12px 12px;
+  background-position: 0 0, 6px 6px;
+}
+
+/* 成功中待機メッセージ */
+.waitNote{
+  font-size:12px;
+  color:#555;
 }
 </style>
 </head>
@@ -160,19 +163,34 @@ body{
 </div>
 </div>
 
-<!-- ▼ 奇跡の完全成功画面 -->
-<div id="miracle" class="modalBg">
+<!-- ▼ 成功 → 10秒待機画面 -->
+<div id="successWait" class="modalBg">
 <div class="modal">
 <div class="big-text">
-予約が確定しました！
+予約が完了しました<br>
+ただいま入場用コードを準備中です…
 </div>
 
-<div class="qrBox">
-QR CODE
+<p class="waitNote">
+※ この画面は閉じないでください<br>
+※ 10秒ほどでQRコードが表示されます
+</p>
+</div>
+</div>
+
+<!-- ▼ 最終 QR 表示画面 -->
+<div id="qrShow" class="modalBg">
+<div class="modal">
+<div class="big-text">
+入場用QRコード
+</div>
+
+<div class="qrOuter">
+<div class="qrBox"></div>
 </div>
 
 <p>
-この画面をスクリーンショットで保存し、<br>
+スクリーンショットを保存し、<br>
 当日の入場時に提示してください。
 </p>
 
@@ -196,16 +214,22 @@ btn.addEventListener("click", ()=>{
  btn.style.opacity="0.6";
  btn.style.pointerEvents="none";
 
- // ←← ここを100%成功固定
+ // ★ まず 3秒待たせる
  setTimeout(()=>{
-   showMiracle();
+   showSuccessWait();
  }, 3000);
 
 });
 
-function showMiracle(){
- document.getElementById("miracle").style.display="flex";
- resetBtn();
+function showSuccessWait(){
+ document.getElementById("successWait").style.display="flex";
+
+ // ★ さらに10秒放置 → QR表示
+ setTimeout(()=>{
+   document.getElementById("successWait").style.display="none";
+   document.getElementById("qrShow").style.display="flex";
+   resetBtn();
+ }, 10000);
 }
 
 function closeAll(){
