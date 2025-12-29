@@ -47,7 +47,7 @@ body{
   font-weight:bold;
 }
 
-/* ← 本家寄せ 最終調整 */
+/* 本家寄せ */
 .ok,.warn,.ng{
   font-size:18px;
   line-height:18px;
@@ -90,15 +90,6 @@ body{
   line-height:35px;
 }
 
-.modal button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:1px solid #333;
-  border-radius:6px;
-  background:white;
-}
-
 /* QRページ */
 .qrScreen{
   display:none;
@@ -106,17 +97,6 @@ body{
   padding:40px;
 }
 
-/* もっとQRっぽく */
-.qrBox{
-  width:240px;
-  height:240px;
-  margin:20px auto;
-  background:
-    repeating-linear-gradient(90deg,#000 0 12px,#fff 12px 24px),
-    repeating-linear-gradient(#000 0 12px,#fff 12px 24px);
-  background-blend-mode:multiply;
-  border:10px solid #000;
-}
 </style>
 </head>
 
@@ -127,6 +107,7 @@ body{
 <div class="title">2025年12月30日(火)</div>
 <div class="sub">やっちゃん誕生日会 参加時間帯を選んでください</div>
 
+<!-- 8枠 -->
 <div class="slot">
 <span class="icon ok">○</span>
 <input type="radio" name="time" value="18:00">18:00〜
@@ -172,7 +153,8 @@ body{
 </div>
 </div>
 
-<!-- 成功モーダル -->
+
+<!-- ▼ 成功モーダル（閉じるボタン無し・10秒拘束） -->
 <div id="success" class="modalBg">
 <div class="modal">
 <div class="big-text">
@@ -180,24 +162,33 @@ body{
 誕生日会の参加予約が<br>
 確定しました！
 </div>
-<br>
-<div id="successTime"></div>
+
+<div id="successTime" style="margin-top:10px;"></div>
 
 <p style="font-size:12px;margin-top:10px;">
-このあとQRコードが表示されます。<br>
-スクリーンショットして、当日入口で提示してください。
+このあと入場用QRコードが表示されます。<br>
+スクリーンショットして当日入口で提示してください。
 </p>
 
-<button onclick="closeAll()">とじる</button>
+<p style="margin-top:10px;font-size:11px;color:#777;">
+自動的にQRコード画面へ移動します…
+</p>
+
 </div>
 </div>
 
-<!-- QR画面 -->
+
+<!-- ▼ QR画面（本物QR画像表示） -->
 <div id="qr" class="qrScreen">
 <h2>入場用QRコード</h2>
-<div class="qrBox"></div>
-<p>この画面をスクリーンショットして保存してください。</p>
+
+<img src="qr.png" width="240" height="240">
+
+<p style="margin-top:15px;">
+この画面をスクリーンショットして保存してください。
+</p>
 </div>
+
 
 <script>
 
@@ -215,6 +206,7 @@ btn.addEventListener("click", ()=>{
  btn.style.opacity = "0.6";
  btn.style.pointerEvents = "none";
 
+ // 3秒処理→成功モーダル
  setTimeout(()=>{
    showSuccess(checked.value);
  },3000);
@@ -225,6 +217,7 @@ function showSuccess(time){
  document.getElementById("successTime").innerText="参加時間："+time;
  document.getElementById("success").style.display="flex";
 
+ // 10秒後 → 自動でQRへ
  setTimeout(()=>{
    document.getElementById("success").style.display="none";
    document.getElementById("mainScreen").style.display="none";
@@ -232,10 +225,6 @@ function showSuccess(time){
  },10000);
 
  resetBtn();
-}
-
-function closeAll(){
- document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
 }
 
 function resetBtn(){
