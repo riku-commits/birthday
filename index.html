@@ -2,288 +2,266 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<title>やっちゃん誕生日 参加予約</title>
+<title>やっちゃん誕生会 参加予約</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
-  background:#e8f0ff;
-  font-family:"Helvetica","Yu Gothic","Meiryo",sans-serif;
-  margin:0;
+  background:#e7f1ff;
+  font-family: "Yu Gothic","メイリオ",sans-serif;
 }
 
 .container{
-  max-width:650px;
-  margin:30px auto;
+  width:720px;
+  max-width:95%;
+  margin:40px auto;
   background:white;
-  border-radius:14px;
-  padding:25px 25px 35px;
-  box-shadow:0 0 30px rgba(0,0,0,0.15);
+  border-radius:10px;
+  padding:30px;
 }
 
 .title{
-  font-size:22px;
   font-weight:bold;
+  font-size:20px;
 }
 
 .sub{
+  color:#555;
   font-size:12px;
-  color:#666;
+  margin-bottom:20px;
 }
 
-/* ─ 時間帯カード ─ */
 .slot{
-  border:1px solid #ccc;
-  border-radius:10px;
-  padding:14px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:12px;
+  margin:10px 0;
   display:flex;
   align-items:center;
-  margin-top:12px;
+  gap:15px;
 }
 
-.slot span{
-  margin-left:10px;
+.icon{
+  width:30px;
+  text-align:center;
+  font-weight:bold;
 }
 
-.ok{ color:#3090ff; font-size:20px;}
-.warn{ color:#d4a000; font-size:22px;}
-.ng{ color:#d40000; font-size:24px;}
+/* ←ここが修正版（統一フォントサイズ） */
+.ok,.warn,.ng{
+  font-size:22px;
+}
+.ok{ color:#3090ff;}
+.warn{ color:#d4a000;}
+.ng{ color:#d40000;}
 
-button.reserve{
-  margin-top:18px;
-  background:#d40000;
+.bottomButton{
+  background:#d80000;
   color:white;
-  width:100%;
-  border:0;
-  padding:16px;
-  border-radius:10px;
-  font-size:16px;
+  padding:18px;
+  margin-top:25px;
+  border-radius:8px;
+  text-align:center;
+  font-size:18px;
+  cursor:pointer;
 }
 
-/* ─ モーダル背景共通 ─ */
 .modalBg{
   position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.65);
+  inset:0;
+  background:rgba(0,0,0,0.6);
   display:none;
   justify-content:center;
   align-items:center;
 }
 
-/* ─ 成功ポップアップ ─ */
-.popupCard{
-  background:white;
-  border-radius:12px;
-  padding:20px;
-  width:300px;
-  text-align:center;
-}
-
-.popupTitle{
-  font-size:16px;
-  font-weight:bold;
-  line-height:28px;
-}
-
-.popupIcon{
-  font-size:40px;
-  margin:10px 0;
-}
-
-.popupTime{
-  font-size:13px;
-  margin:8px 0 12px;
-}
-
-.notice{
-  font-size:12px;
-  color:#444;
-  margin-top:10px;
-}
-
-.popupBtn{
-  width:100%;
-  padding:10px;
-  border:1px solid #444;
-  border-radius:6px;
-  background:white;
-}
-
-/* ─ QR ─ */
 .modal{
   background:white;
   padding:25px;
   border-radius:10px;
+  width:340px;
   text-align:center;
 }
 
 .big-text{
-  font-size:20px;
+  font-size:18px;
   font-weight:bold;
+  line-height:35px;
 }
 
-.qrOuter{
+.modal button{
+  width:100%;
   padding:12px;
-  border:3px solid #111;
-  display:inline-block;
-  margin-top:14px;
+  margin-top:10px;
+  border:1px solid #333;
+  border-radius:6px;
+  background:white;
 }
 
-.realQR{
+.waitScreen{
+  display:none;
+  text-align:center;
+  color:white;
+  background:#333;
+  padding:40px;
+}
+
+.errorPage{
+  display:none;
+  text-align:center;
+  padding:40px;
+}
+
+/* QR風ページ */
+.qrScreen{
+  display:none;
+  text-align:center;
+  padding:40px;
+}
+
+.qrBox{
   width:240px;
   height:240px;
-  position:relative;
-}
-
-.finder{
-  width:60px;
-  height:60px;
+  margin:20px auto;
+  background:
+    repeating-linear-gradient(90deg,#000 0 10px,#fff 10px 20px),
+    repeating-linear-gradient(#000 0 10px,#fff 10px 20px);
+  background-blend-mode:multiply;
   border:8px solid #000;
-  position:absolute;
 }
-.tl{top:0;left:0;}
-.tr{top:0;right:0;}
-.bl{bottom:0;left:0;}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div id="mainScreen" class="container">
 
-  <div class="title">2025年12月30日(火)</div>
-  <div class="sub">やっちゃん誕生日会の参加時間帯を選んでください</div>
+<div class="title">2025年12月30日(火)</div>
+<div class="sub">やっちゃん誕生日会 参加時間帯を選んでください</div>
 
-  <!-- 8枠 -->
-  <div class="slot"><input type="radio" name="time" value="18:00"><span class="ok">○</span><span>18:00〜</span></div>
-  <div class="slot"><input type="radio" name="time" value="18:20"><span class="warn">△</span><span>18:20〜</span></div>
-  <div class="slot"><input type="radio" name="time" value="18:40"><span class="ok">○</span><span>18:40〜</span></div>
-  <div class="slot"><input type="radio" name="time" value="19:00"><span class="ok">○</span><span>19:00〜</span></div>
-  <div class="slot"><input type="radio" name="time" value="19:20"><span class="warn">△</span><span>19:20〜</span></div>
-
-  <div class="slot">
-    <input type="radio" disabled>
-    <span class="ng">×</span>
-    <span>19:40〜（選択不可）</span>
-  </div>
-
-  <div class="slot"><input type="radio" name="time" value="20:00"><span class="ok">○</span><span>20:00〜</span></div>
-  <div class="slot"><input type="radio" name="time" value="20:20"><span class="warn">△</span><span>20:20〜</span></div>
-
-  <button class="reserve" onclick="reserve()">この時間で参加する →</button>
+<!-- 8枠固定 -->
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="18:00">18:00〜
 </div>
 
-
-<!-- ▼ 成功ポップアップ -->
-<div id="successPopup" class="modalBg">
-  <div class="popupCard">
-
-    <div class="popupTitle">
-      ＜ 空き枠発見 ＞<br>
-      誕生日会の参加予約が<br>
-      完了しました
-    </div>
-
-    <div class="popupIcon">🎉🎂</div>
-
-    <div class="popupTime">
-      参加時間：<span id="successTimeText"></span>
-    </div>
-
-    <div class="notice">
-      このあと入場用QRコードが表示されます。<br>
-      当日入場時に提示が必要です。<br>
-      必ずスクリーンショットを保存してください。
-    </div>
-
-    <button class="popupBtn">とじる</button>
-  </div>
+<div class="slot">
+<span class="icon warn">△</span>
+<input type="radio" name="time" value="18:20">18:20〜
 </div>
 
-
-<!-- ▼ QR -->
-<div id="qrShow" class="modalBg">
-  <div class="modal">
-    <div class="big-text">入場用QRコード</div>
-
-    <div class="qrOuter">
-      <div class="realQR">
-        <div class="finder tl"></div>
-        <div class="finder tr"></div>
-        <div class="finder bl"></div>
-
-        <canvas id="qrCanvas" width="220" height="220"></canvas>
-      </div>
-    </div>
-
-    <p>
-      スクリーンショットを保存し、<br>
-      当日の入場時に提示してください。
-    </p>
-
-    <button onclick="closeAll()">とじる</button>
-  </div>
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="18:40">18:40〜
 </div>
 
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="19:00">19:00〜
+</div>
+
+<div class="slot">
+<span class="icon warn">△</span>
+<input type="radio" name="time" value="19:20">19:20〜
+</div>
+
+<div class="slot">
+<span class="icon ng">×</span>
+<input type="radio" disabled>19:40〜（選択不可）
+</div>
+
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="20:00">20:00〜
+</div>
+
+<div class="slot">
+<span class="icon warn">△</span>
+<input type="radio" name="time" value="20:20">20:20〜
+</div>
+
+<div id="submitButton" class="bottomButton">
+この時間で参加する →
+</div>
+</div>
+
+<!-- ▼ 待機画面 -->
+<div id="waitScreen" class="waitScreen">
+<h2>順番にご案内しております。</h2>
+<p>現在サイトが大変混雑しております。<br>しばらくお待ちください…</p>
+</div>
+
+<!-- ▼ 予約成功モーダル -->
+<div id="success" class="modalBg">
+<div class="modal">
+<div class="big-text">
+＜ 空き枠発見 ＞<br>
+誕生日会の参加予約が<br>
+確定しました！
+</div>
+<br>
+<div id="successTime"></div>
+
+<p style="font-size:12px;margin-top:10px;">
+このあとQRコードが表示されます。<br>
+スクリーンショットを撮影し、当日入口で提示してください。
+</p>
+
+<button onclick="closeAll()">とじる</button>
+</div>
+</div>
+
+<!-- ▼ QR画面 -->
+<div id="qr" class="qrScreen">
+<h2>入場用QRコード</h2>
+<div class="qrBox"></div>
+<p>この画面をスクリーンショットして保存してください。</p>
+</div>
 
 <script>
 
-// ─ 予約処理 ─
-function reserve(){
+const btn = document.getElementById("submitButton");
 
-  let t = document.querySelector("input[name='time']:checked");
-  if(!t){
-    alert("時間を選んでください");
-    return;
-  }
+btn.addEventListener("click", ()=>{
 
-  let time = t.value;
+ const checked = document.querySelector('input[name="time"]:checked');
+ if(!checked){
+   alert("時間帯を選択してください。");
+   return;
+ }
 
-  setTimeout(()=>{ showSuccess(time); },3000);
-}
+ btn.innerText = "処理中…";
+ btn.style.opacity = "0.6";
+ btn.style.pointerEvents = "none";
+
+ // 今は成功100%
+ setTimeout(()=>{
+   showSuccess(checked.value);
+ },3000);
+});
 
 
-// ─ 成功表示 → 10秒 → QR ─
 function showSuccess(time){
+ document.getElementById("successTime").innerText="参加時間："+time;
+ document.getElementById("success").style.display="flex";
 
-  document.getElementById("successTimeText").innerText = time;
-  document.getElementById("successPopup").style.display="flex";
+ setTimeout(()=>{
+   document.getElementById("success").style.display="none";
+   document.getElementById("mainScreen").style.display="none";
+   document.getElementById("qr").style.display="block";
+ },10000);
 
-  setTimeout(()=>{
-    document.getElementById("successPopup").style.display="none";
-    showQR();
-  },10000);
-}
-
-
-// ─ QR描画 ─
-function showQR(){
-
-  const qr = document.getElementById("qrCanvas");
-  const ctx = qr.getContext("2d");
-
-  ctx.fillStyle="white";
-  ctx.fillRect(0,0,220,220);
-
-  ctx.fillStyle="black";
-
-  for(let y=0; y<22; y++){
-    for(let x=0; x<22; x++){
-
-      if((x<5 && y<5) || (x>16 && y<5) || (x<5 && y>16)) continue;
-
-      if(Math.random()>0.55){
-        ctx.fillRect(x*10, y*10, 9, 9);
-      }
-    }
-  }
-
-  document.getElementById("qrShow").style.display="flex";
+ resetBtn();
 }
 
 function closeAll(){
-  document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
+ document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
+}
+
+function resetBtn(){
+ btn.innerText="この時間で参加する →";
+ btn.style.opacity="1";
+ btn.style.pointerEvents="auto";
 }
 
 </script>
