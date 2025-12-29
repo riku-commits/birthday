@@ -11,6 +11,7 @@ body{
   font-family: "Yu Gothic","メイリオ",sans-serif;
 }
 
+/* ===== メイン画面 ===== */
 .container{
   width:720px;
   max-width:95%;
@@ -63,6 +64,7 @@ body{
   cursor:pointer;
 }
 
+/* ===== モーダル ===== */
 .modalBg{
   position:fixed;
   inset:0;
@@ -95,14 +97,50 @@ body{
   background:white;
 }
 
+/* ===== 待機画面（本家寄せ） ===== */
 .waitScreen{
   display:none;
-  text-align:center;
+  background:#3b3b3b;
+  min-height:100vh;
   color:white;
-  background:#333;
-  padding:40px;
+  padding:30px;
+  text-align:center;
 }
 
+.waitBox{
+  max-width:750px;
+  margin:0 auto;
+  background:#4a4a4a;
+  padding:25px;
+  border-radius:10px;
+}
+
+.waitLogo{
+  width:260px;
+  margin:5px auto 20px;
+}
+
+.waitBarWrap{
+  background:#222;
+  border-radius:5px;
+  padding:4px;
+  margin-top:25px;
+}
+
+.waitBar{
+  width:0%;
+  height:18px;
+  background:#00cc66;
+  border-radius:4px;
+  transition:width 0.3s;
+}
+
+.waitNum{
+  margin-top:18px;
+  font-size:18px;
+}
+
+/* ===== エラー画面 ===== */
 .errorPage{
   display:none;
   text-align:center;
@@ -114,12 +152,13 @@ body{
 
 <body>
 
+<!-- ▼ メイン画面 -->
 <div id="mainScreen" class="container">
 
 <div class="title">2025年12月30日(火)</div>
 <div class="sub">やっちゃん誕生日会 参加時間帯を選んでください</div>
 
-<!-- 8枠固定 -->
+<!-- 8枠 -->
 <div class="slot">
 <span class="icon ok">○</span>
 <input type="radio" name="time" value="18:00">18:00〜
@@ -165,21 +204,52 @@ body{
 </div>
 </div>
 
-<!-- ▼ 待機画面 -->
+
+<!-- ▼ 待機画面（10秒で戻る） -->
 <div id="waitScreen" class="waitScreen">
-<h2>順番にご案内しております。</h2>
-<p>現在サイトが大変混雑しております。<br>しばらくお待ちください…</p>
-<div>⏳ 待ち時間目安：10秒</div>
+  <div class="waitBox">
+
+    <img class="waitLogo"
+    src="https://www.expo2025.or.jp/wp-content/themes/expo2025/assets/img/common/logo.png">
+
+    <h2>順番にご案内しております。</h2>
+
+    <p>
+      現在サイトが大変混雑しております。<br>
+      順番が来るまでお待ちいただくか、時間をおいて再度アクセスしてください。
+    </p>
+
+    <div class="waitBarWrap">
+      <div id="waitBar" class="waitBar"></div>
+    </div>
+
+    <div class="waitNum">
+      ご自身の前に並んでいる人数：
+      <span id="queueNum">470</span><br>
+      待ち時間の目安：
+      <span id="eta">約1分</span>
+    </div>
+
+    <div style="margin-top:12px;font-size:12px;">
+      ※混雑状況によって変動する場合があります
+    </div>
+
+  </div>
 </div>
+
 
 <!-- ▼ エラー画面 -->
 <div id="errorScreen" class="errorPage">
 <h2>ご確認ください</h2>
-<p>処理を完了できませんでした。</p>
+<p>
+アクセスが集中しているため処理を完了できませんでした。<br>
+時間をおいて再度お試しください。
+</p>
 <button onclick="restart()">トップへもどる</button>
 </div>
 
-<!-- ▼ 予約成功モーダル -->
+
+<!-- ▼ 予約成功 -->
 <div id="success" class="modalBg">
 <div class="modal">
 <div class="big-text">
@@ -193,7 +263,8 @@ body{
 </div>
 </div>
 
-<!-- ▼ 予約失敗モーダル -->
+
+<!-- ▼ 予約失敗 -->
 <div id="fail" class="modalBg">
 <div class="modal">
 <div class="big-text">
@@ -207,6 +278,7 @@ body{
 </div>
 </div>
 
+
 <script>
 
 const btn = document.getElementById("submitButton");
@@ -219,52 +291,69 @@ btn.addEventListener("click", ()=>{
    return;
  }
 
- // 本家イライラ仕様
  btn.innerText = "処理中…";
  btn.style.opacity = "0.6";
  btn.style.pointerEvents = "none";
 
- // 運命判定
  const fate = Math.random();
 
  setTimeout(()=>{
 
-   // 20% 強制待機
    if(fate < 0.2){
      showWait();
      return;
    }
 
-   // 20% エラー
    if(fate < 0.4){
      showError();
      return;
    }
 
-   // 30% 失敗
    if(fate < 0.7){
      showFail();
      return;
    }
 
-   // 30% 成功
    showSuccess(checked.value);
 
  },1200);
 });
 
 
-function showWait(){
- document.getElementById("mainScreen").style.display="none";
- document.getElementById("waitScreen").style.display="block";
 
- setTimeout(()=>{
-   document.getElementById("waitScreen").style.display="none";
-   document.getElementById("mainScreen").style.display="block";
-   resetBtn();
- },10000);
+/* ===== 待機画面 ===== */
+function showWait(){
+  document.getElementById("mainScreen").style.display="none";
+  document.getElementById("waitScreen").style.display="block";
+
+  let bar = document.getElementById("waitBar");
+  let num = document.getElementById("queueNum");
+
+  let progress = 0;
+  let people = 470;
+
+  let timer = setInterval(()=>{
+    progress += 5;
+    people -= Math.floor(Math.random()*5)+1;
+
+    if(progress>100) progress = 100;
+    if(people<5) people = 5;
+
+    bar.style.width = progress+"%";
+    num.textContent = people;
+
+  },500);
+
+  setTimeout(()=>{
+    clearInterval(timer);
+    document.getElementById("waitScreen").style.display="none";
+    document.getElementById("mainScreen").style.display="block";
+    resetBtn();
+  },10000);
 }
 
+
+/* ===== 各結果処理 ===== */
 function showError(){
  document.getElementById("mainScreen").style.display="none";
  document.getElementById("errorScreen").style.display="block";
