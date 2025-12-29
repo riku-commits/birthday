@@ -63,38 +63,6 @@ body{
   cursor:pointer;
 }
 
-/* ====== 待機画面 ====== */
-.waitScreen{
-  display:none;
-  text-align:center;
-  color:white;
-  background:#2e2e2e;
-  padding:40px;
-}
-
-.waitBox{
-  margin:0 auto;
-  max-width:800px;
-  padding:20px;
-}
-
-.progressOuter{
-  width:90%;
-  height:30px;
-  background:#555;
-  margin:25px auto;
-  border-radius:4px;
-  overflow:hidden;
-}
-
-.progressInner{
-  height:100%;
-  width:10%;
-  background:#33dd66;
-  transition:width 1s linear;
-}
-
-/* ====== モーダル ====== */
 .modalBg{
   position:fixed;
   inset:0;
@@ -118,6 +86,17 @@ body{
   line-height:35px;
 }
 
+.qrBox{
+  width:220px;
+  height:220px;
+  margin:18px auto;
+  background:#111;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
 .modal button{
   width:100%;
   padding:12px;
@@ -126,49 +105,11 @@ body{
   border-radius:6px;
   background:white;
 }
-
-/* ====== エラー画面 ====== */
-#errorScreen{
-  display:none;
-  padding:60px;
-  text-align:center;
-  background:white;
-}
-
-#errorScreen h2{
-  font-size:26px;
-  margin-bottom:15px;
-}
-
-#errorScreen button{
-  padding:12px 20px;
-  border:1px solid #000;
-  border-radius:6px;
-}
-
-/* ====== 本人確認(成功後) ====== */
-#finalTicket{
-  display:none;
-  text-align:center;
-  padding:40px;
-}
-
-.qr{
-  width:260px;
-  height:260px;
-  margin:20px auto;
-  background:
-    repeating-linear-gradient(0deg,#000 0 10px,#fff 10px 20px),
-    repeating-linear-gradient(90deg,#000 0 10px,#fff 10px 20px);
-  border:6px solid #000;
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- メイン画面 -->
 <div id="mainScreen" class="container">
 
 <div class="title">2025年12月30日(火)</div>
@@ -219,79 +160,25 @@ body{
 </div>
 </div>
 
-
-<!-- ====== 待機 ====== -->
-<div id="waitScreen" class="waitScreen">
-<div class="waitBox">
-<h2>順番にご案内しております。</h2>
-<p>現在サイトが大変混雑しております。<br>
-順番が来るまでこのままお待ちください。</p>
-
-<div class="progressOuter">
-<div id="bar" class="progressInner"></div>
-</div>
-
-<div id="queueInfo">
-ご自身の前に並んでいる人数： <span id="people">432</span><br>
-サイトにアクセスできる推定時刻： 計測中…<br>
-待ち時間の目安： <span id="timeLeft">1分</span>
-</div>
-</div>
-</div>
-
-
-<!-- ====== 成功 ====== -->
-<div id="success" class="modalBg">
+<!-- ▼ 奇跡の完全成功画面 -->
+<div id="miracle" class="modalBg">
 <div class="modal">
 <div class="big-text">
-＜ 空き枠先着 ＞<br>
-誕生日会の参加予約が<br>
-確定しました！
+予約が確定しました！
 </div>
-<br>
-<div id="successTime"></div>
+
+<div class="qrBox">
+QR CODE
+</div>
+
+<p>
+この画面をスクリーンショットで保存し、<br>
+当日の入場時に提示してください。
+</p>
+
 <button onclick="closeAll()">とじる</button>
 </div>
 </div>
-
-
-<!-- ====== 失敗 ====== -->
-<div id="fail" class="modalBg">
-<div class="modal">
-<div class="big-text">
-＜ 空き枠先着 ＞<br>
-予約が確保できませんでした
-</div>
-<br>
-お手数ですが、再度お試しください。
-<button onclick="closeAll()">とじる</button>
-</div>
-</div>
-
-
-<!-- ====== エラー ====== -->
-<div id="errorScreen">
-<h2>エラーが発生しました</h2>
-<p>エラーが発生したため処理を中断しました。<br><br>
-(エラーコード：E_SW_GP_DL_004)</p>
-<br>
-<button onclick="location.reload()">トップへもどる</button>
-</div>
-
-
-<!-- ====== 最終チケット画面 ====== -->
-<div id="finalTicket">
-<h2>予約が確定しました</h2>
-<p>この画面をスクリーンショットして保存してください。<br>
-当日、入口で係員に提示してください。</p>
-
-<div class="qr"></div>
-
-<p>やっちゃん誕生日会 入場確認用</p>
-
-<button onclick="location.reload()">トップへ戻る</button>
-</div>
-
 
 <script>
 
@@ -306,94 +193,21 @@ btn.addEventListener("click", ()=>{
  }
 
  btn.innerText = "処理中…";
- btn.style.opacity = "0.6";
- btn.style.pointerEvents = "none";
+ btn.style.opacity="0.6";
+ btn.style.pointerEvents="none";
 
- const rand = Math.random();
-
- // 10% 待機
- if(rand < 0.10){
-   showWait();
-   return;
- }
-
- // 10% エラー
- if(rand < 0.20){
-   setTimeout(()=>{ showError(); resetBtn(); },4000);
-   return;
- }
-
- // 79% 失敗
- if(rand < 0.99){
-   setTimeout(()=>{ showFail(); resetBtn(); },5000);
-   return;
- }
-
- // 1% 奇跡の成功
+ // ←← ここを100%成功固定
  setTimeout(()=>{
-   showSuccess(checked.value);
-
-   // 数秒後 → 本人確認画面へ
-   setTimeout(()=>{
-      document.getElementById("success").style.display="none";
-      document.getElementById("mainScreen").style.display="none";
-      document.getElementById("finalTicket").style.display="block";
-   },3000);
-
-   resetBtn();
- },5000);
+   showMiracle();
+ }, 3000);
 
 });
 
-
-// ===== 待機 =====
-function showWait(){
- document.getElementById("mainScreen").style.display="none";
- document.getElementById("waitScreen").style.display="block";
-
- let bar = document.getElementById("bar");
- let people = document.getElementById("people");
- let t = 10;
- let p = 470;
-
- let timer = setInterval(()=>{
-   if(t <= 0){
-     clearInterval(timer);
-     document.getElementById("waitScreen").style.display="none";
-     document.getElementById("mainScreen").style.display="block";
-     resetBtn();
-     return;
-   }
-   t--;
-   p -= Math.floor(Math.random()*20);
-   bar.style.width = (100 - t*8)+"%";
-   people.innerText = p;
- },1000);
+function showMiracle(){
+ document.getElementById("miracle").style.display="flex";
+ resetBtn();
 }
 
-
-// ===== 成功 =====
-function showSuccess(time){
- document.getElementById("successTime").innerText="参加時間 "+time;
- document.getElementById("success").style.display="flex";
-}
-
-
-// ===== 失敗 =====
-function showFail(){
- document.getElementById("fail").style.display="flex";
-}
-
-
-// ===== エラー =====
-function showError(){
- document.getElementById("mainScreen").style.display="none";
- document.getElementById("waitScreen").style.display="none";
- document.getElementById("errorScreen").style.display="block";
-}
-
-
-// ===== 共通 =====
 function closeAll(){
  document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
 }
