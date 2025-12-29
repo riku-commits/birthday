@@ -8,10 +8,10 @@
 <style>
 body{
   background:#e7f1ff;
-  font-family:"Yu Gothic","メイリオ",sans-serif;
+  font-family: "Yu Gothic","メイリオ",sans-serif;
 }
 
-/* ---------- メイン画面 ---------- */
+/* メインフォーム */
 .container{
   width:720px;
   max-width:95%;
@@ -21,8 +21,16 @@ body{
   padding:30px;
 }
 
-.title{ font-weight:bold; font-size:20px; }
-.sub{ color:#555; font-size:12px; margin-bottom:20px; }
+.title{
+  font-weight:bold;
+  font-size:20px;
+}
+
+.sub{
+  color:#555;
+  font-size:12px;
+  margin-bottom:20px;
+}
 
 .slot{
   border:1px solid #ddd;
@@ -56,45 +64,39 @@ body{
   cursor:pointer;
 }
 
-/* ---------- 待機画面（EXPO風） ---------- */
+/* ----- 待機画面（EXPO風） ----- */
+
 .waitScreen{
   display:none;
   text-align:center;
-  padding:40px;
-  background:#333;
   color:white;
+  background:#2e2e2e;
+  padding:40px;
 }
 
 .waitBox{
-  background:#444;
+  margin:0 auto;
+  max-width:800px;
   padding:20px;
-  border-radius:10px;
-  margin-top:20px;
 }
 
-.barBox{
-  width:100%;
-  background:#666;
-  padding:6px;
-  border-radius:6px;
-  margin:15px 0;
+.progressOuter{
+  width:90%;
+  height:30px;
+  background:#555;
+  margin:25px auto;
+  border-radius:4px;
+  overflow:hidden;
 }
 
-.bar{
-  height:14px;
-  background:#1aff5f;
-  width:5%;
-  animation: progress 10s infinite linear;
+.progressInner{
+  height:100%;
+  width:10%;
+  background:#33dd66;
+  transition:width 1s linear;
 }
 
-@keyframes progress{
-  0%{width:5%;}
-  50%{width:95%;}
-  100%{width:5%;}
-}
-
-/* ---------- エラー & モーダル ---------- */
-.errorPage{ display:none; text-align:center; padding:40px; }
+/* ----- モーダル ----- */
 
 .modalBg{
   position:fixed;
@@ -113,7 +115,11 @@ body{
   text-align:center;
 }
 
-.big-text{ font-size:18px; font-weight:bold; line-height:35px; }
+.big-text{
+  font-size:18px;
+  font-weight:bold;
+  line-height:35px;
+}
 
 .modal button{
   width:100%;
@@ -124,65 +130,87 @@ body{
   background:white;
 }
 
+/* 予約失敗 & 成功 */
+#errorScreen{
+  display:none;
+  text-align:center;
+  padding:40px;
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- メイン画面 -->
 <div id="mainScreen" class="container">
 
 <div class="title">2025年12月30日(火)</div>
 <div class="sub">やっちゃん誕生日会 参加時間帯を選んでください</div>
 
 <!-- 8枠 -->
-<div class="slot"><span class="icon ok">○</span><input type="radio" name="time" value="18:00">18:00〜</div>
-<div class="slot"><span class="icon mid">△</span><input type="radio" name="time" value="18:20">18:20〜</div>
-<div class="slot"><span class="icon ok">○</span><input type="radio" name="time" value="18:40">18:40〜</div>
-<div class="slot"><span class="icon ok">○</span><input type="radio" name="time" value="19:00">19:00〜</div>
-<div class="slot"><span class="icon mid">△</span><input type="radio" name="time" value="19:20">19:20〜</div>
-
-<!-- 満員スペース修正済み -->
 <div class="slot">
-<span class="icon ng">×</span>
-<input type="radio" disabled style="opacity:0;pointer-events:none;">
-19:40〜
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="18:00">18:00〜
 </div>
 
-<div class="slot"><span class="icon ok">○</span><input type="radio" name="time" value="20:00">20:00〜</div>
-<div class="slot"><span class="icon mid">△</span><input type="radio" name="time" value="20:20">20:20〜</div>
+<div class="slot">
+<span class="icon mid">△</span>
+<input type="radio" name="time" value="18:20">18:20〜
+</div>
+
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="18:40">18:40〜
+</div>
+
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="19:00">19:00〜
+</div>
+
+<div class="slot">
+<span class="icon mid">△</span>
+<input type="radio" name="time" value="19:20">19:20〜
+</div>
+
+<div class="slot">
+<span class="icon ng">×</span>
+<input type="radio" disabled>19:40〜
+</div>
+
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="20:00">20:00〜
+</div>
+
+<div class="slot">
+<span class="icon mid">△</span>
+<input type="radio" name="time" value="20:20">20:20〜
+</div>
 
 <div id="submitButton" class="bottomButton">
 この時間で参加する →
 </div>
-
 </div>
 
-<!-- ▼ 待機画面（本家風） -->
+<!-- ▼ 待機画面 -->
 <div id="waitScreen" class="waitScreen">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Expo_2025_logo.svg/512px-Expo_2025_logo.svg.png" width="160">
-
-<h2>順番にご案内しております。</h2>
-<p>
-現在サイトが大変混雑しております。<br>
-順番が来るまでこのままお待ちください。
-</p>
-
 <div class="waitBox">
-<div class="barBox">
-<div class="bar"></div>
+<h2>順番にご案内しております。</h2>
+<p>現在サイトが大変混雑しております。<br>
+順番が来るまでこのままお待ちください。</p>
+
+<div class="progressOuter">
+<div id="bar" class="progressInner"></div>
 </div>
 
-<div id="queuePeople">ご自身の前に並んでいる人数： 470</div>
-<div id="estimate">サイトにアクセスできる推定時刻： 計算中…</div>
-<div id="remain">待ち時間の目安： 計測中…</div>
+<div id="queueInfo">
+ご自身の前に並んでいる人数： <span id="people">432</span><br>
+サイトにアクセスできる推定時刻： 計測中…<br>
+待ち時間の目安： <span id="timeLeft">1分</span>
 </div>
 </div>
-
-<!-- ▼ エラー -->
-<div id="errorScreen" class="errorPage">
-<h2>ご確認ください</h2>
-<p>処理を完了できませんでした。</p>
-<button onclick="restart()">トップへもどる</button>
 </div>
 
 <!-- ▼ 成功 -->
@@ -207,13 +235,14 @@ body{
 予約が確保できませんでした
 </div>
 <br>
-時間帯を再度選択してください。
+お手数ですが、再度お試しください。
 <button onclick="closeAll()">とじる</button>
 </div>
 </div>
 
 <script>
 
+// ボタン
 const btn = document.getElementById("submitButton");
 
 btn.addEventListener("click", ()=>{
@@ -224,79 +253,80 @@ btn.addEventListener("click", ()=>{
    return;
  }
 
- btn.innerText = "通信中…";
+ btn.innerText = "処理中…";
  btn.style.opacity = "0.6";
  btn.style.pointerEvents = "none";
 
- showWait();
+ const rand = Math.random();
 
- // イライラ最低 12秒は絶対待たせる
+ // 10% → 待機地獄へ
+ if(rand < 0.10){
+   showWait();
+   return;
+ }
+
+ // 89% → 5秒後失敗
+ if(rand < 0.99){
+   setTimeout(()=>{
+     showFail();
+     resetBtn();
+   },5000);
+   return;
+ }
+
+ // 1% → 奇跡の成功
  setTimeout(()=>{
-   decideFate(checked.value);
- },12000);
+   showSuccess(checked.value);
+   resetBtn();
+ },5000);
+
 });
 
+
+// ====== 待機画面 ======
 function showWait(){
  document.getElementById("mainScreen").style.display="none";
  document.getElementById("waitScreen").style.display="block";
 
- // 疑似人数と残り時間演出
- let remain = 70 + Math.floor(Math.random()*60);
- let people = 400 + Math.floor(Math.random()*200);
+ let bar = document.getElementById("bar");
+ let people = document.getElementById("people");
+ let t = 10;
+ let p = 470;
 
- const q = document.getElementById("queuePeople");
- const r = document.getElementById("remain");
- const e = document.getElementById("estimate");
+ let timer = setInterval(()=>{
+   if(t <= 0){
+     clearInterval(timer);
+     document.getElementById("waitScreen").style.display="none";
+     document.getElementById("mainScreen").style.display="block";
+     resetBtn();
+     return;
+   }
+   t--;
+   p -= Math.floor(Math.random()*20);
 
- q.innerText = "ご自身の前に並んでいる人数： " + people;
- r.innerText = "待ち時間の目安： " + Math.floor(remain/60) + "分";
- e.innerText = "サイトにアクセスできる推定時刻： 計測中…";
+   bar.style.width = (100 - t*8)+"%";
+   people.innerText = p;
+ },1000);
 }
 
-function decideFate(time){
 
- const fate = Math.random();
-
- if(fate < 0.01){
-   showSuccess(time); return;
- }
-
- if(fate < 0.40){
-   showFail(); return;
- }
-
- if(fate < 0.80){
-   showError(); return;
- }
-
- // さらに待たされる地獄
- setTimeout(()=>{
-   showFail();
- },8000);
-}
-
-function showError(){
- document.getElementById("waitScreen").style.display="none";
- document.getElementById("errorScreen").style.display="block";
-}
-
+// ====== 成功 ======
 function showSuccess(time){
  document.getElementById("successTime").innerText="参加時間 "+time;
  document.getElementById("success").style.display="flex";
- resetBtn();
 }
 
+
+// ====== 失敗 ======
 function showFail(){
  document.getElementById("fail").style.display="flex";
- resetBtn();
 }
 
+
+// ====== 共通 ======
 function closeAll(){
  document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
- document.getElementById("mainScreen").style.display="block";
 }
-
-function restart(){ location.reload(); }
 
 function resetBtn(){
  btn.innerText="この時間で参加する →";
