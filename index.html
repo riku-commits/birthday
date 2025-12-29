@@ -1,388 +1,650 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <title>やっちゃん誕生日会 参加予約（EXPO風デモ）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI",
+        "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "Yu Gothic",
+        "メイリオ", sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
 
-<title>EXPO風 予約システム 完成版</title>
+    /* --- Header / Global --- */
+    header {
+      background: #0074c8;
+      color: #fff;
+      padding: 8px 12px;
+    }
+    header .title-line1 {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+    header .title-line2 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
 
-<style>
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #f5f5f5;
+      min-height: 100vh;
+      position: relative;
+    }
 
-/* ========== 全体 EXPO 風 ========== */
-body{
-  font-family:"Noto Sans JP","Hiragino Sans",sans-serif;
-  background:#ffffff;
-  margin:0;
-}
+    /* --- Main screen --- */
+    #main-screen {
+      padding: 16px 8px 100px;
+    }
 
-/* ---------- ヘッダー ---------- */
-.header{
-  background:#d80000;
-  color:#fff;
-  padding:10px;
-  text-align:center;
-  font-weight:700;
-}
+    .page-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .page-sub {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 16px;
+    }
 
-/* ---------- 予約リスト ---------- */
-.container{
-  padding:10px;
-}
+    .card {
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 0 0 1px #ddd;
+      overflow: hidden;
+    }
 
-.row{
-  border:1px solid #ccc;
-  border-radius:6px;
-  padding:10px;
-  margin-bottom:8px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+    .time-row {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+    .time-row:last-child {
+      border-bottom: none;
+    }
 
-.state{
-  width:22px;
-  height:22px;
-  border-radius:50%;
-}
+    .status-mark {
+      width: 24px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    .status-open { color: #0074c8; }   /* 青 ◯ */
+    .status-few  { color: #f2a900; }   /* 黄 △ */
+    .status-full { color: #e60033; }   /* 赤 × */
 
-.ok{background:#1fa91f;}
-.mid{background:#ffcc00;}
-.ng{background:#c90000;}
+    .time-radio {
+      margin-right: 10px;
+    }
 
-.time{
-  font-size:16px;
-}
+    .time-label {
+      flex: 1;
+    }
 
-.selectBtn{
-  border-radius:50%;
-  border:2px solid #aaa;
-  width:22px;
-  height:22px;
-}
+    /* disabled row */
+    .time-row.full-row {
+      background: #f8f8f8;
+      color: #aaa;
+    }
 
-/* ========== 遅延時のブラー ========== */
-.waitMask{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  color:#fff;
-  font-size:18px;
-  z-index:5000;
-}
+    /* --- Bottom action area --- */
+    .bottom-area {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      padding: 8px 8px 16px;
+    }
 
-/* ========== 成功モーダル ========== */
+    .selected-slot {
+      text-align: center;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #666;
+    }
 
-.modalCover{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.75);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  visibility:hidden;
-  z-index:9000;
-}
+    .btn-main {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px 0;
+      border-radius: 4px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      background: #e60033;
+      color: #fff;
+      cursor: pointer;
+    }
+    .btn-main:disabled {
+      background: #f2b3c0;
+      cursor: default;
+    }
 
-.expo-modal{
-  width:340px;
-  background:#ffffff;
-  border-radius:10px;
-  border:1px solid #cfcfcf;
-  text-align:center;
-  padding:28px 18px 26px 18px;
-  position:relative;
-}
+    /* --- Overlay common --- */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .hidden { display: none !important; }
 
-.expo-close{
-  position:absolute;
-  top:12px;
-  right:14px;
-  font-size:22px;
-  cursor:pointer;
-}
+    /* --- Modal (成功/失敗) --- */
+    .modal-box {
+      background: #fff;
+      width: 90%;
+      max-width: 360px;
+      border-radius: 10px;
+      padding: 20px 20px 24px;
+      position: relative;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
+    .modal-close-x {
+      position: absolute;
+      right: 14px;
+      top: 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .modal-title {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    .modal-body {
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .modal-icon {
+      font-size: 48px;
+      margin: 10px 0 16px;
+    }
+    .modal-time {
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+    .modal-button {
+      width: 100%;
+      padding: 10px 0;
+      border-radius: 4px;
+      border: 1px solid #111;
+      background: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
 
-.expo-title{
-  font-size:17px;
-  font-weight:700;
-  margin-bottom:14px;
-  line-height:1.6em;
-}
+    /* --- Loading overlay --- */
+    #loading-overlay .loading-box {
+      background: #fff;
+      padding: 18px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      text-align: center;
+      font-size: 14px;
+    }
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 3px solid #eee;
+      border-top-color: #0074c8;
+      margin: 10px auto 0;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-.expo-text{
-  font-size:15px;
-  line-height:1.9em;
-}
+    /* --- Waiting screen --- */
+    #waiting-screen {
+      padding: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+      background: #f5f5f5;
+    }
+    .wait-card {
+      background: #fff;
+      padding: 18px 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 0 0 1px #ddd;
+    }
+    .wait-logo {
+      height: 56px;
+      margin-bottom: 12px;
+      background: #e60033;
+      border-radius: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .wait-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 10px 0 8px;
+    }
+    .wait-text {
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .wait-bar {
+      margin: 18px 0 10px;
+      height: 18px;
+      background: #444;
+      border-radius: 10px;
+      padding: 2px;
+    }
+    .wait-bar-inner {
+      height: 100%;
+      width: 0;
+      border-radius: 8px;
+      background: repeating-linear-gradient(
+        to right,
+        #00b060 0,
+        #00b060 12px,
+        #008a48 12px,
+        #008a48 18px
+      );
+      animation: waitwalk 10s linear forwards;
+    }
+    @keyframes waitwalk {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+    .wait-footer {
+      font-size: 13px;
+      line-height: 1.7;
+      margin-top: 10px;
+    }
 
-.expo-btn{
-  margin-top:24px;
-  width:230px;
-  height:48px;
-  border:2px solid #111;
-  border-radius:6px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-  font-size:17px;
-}
+    /* --- Fatal error screen --- */
+    #error-screen {
+      padding: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+      background: #f5f5f5;
+    }
+    .error-card {
+      background: #fff;
+      padding: 20px 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 0 0 1px #ddd;
+      text-align: center;
+    }
+    .error-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .error-text {
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .error-button {
+      padding: 10px 18px;
+      border-radius: 4px;
+      border: 1px solid #e60033;
+      background: #fff;
+      color: #e60033;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-
-/* ========== 失敗モーダル ========== */
-
-.modalCover-fail{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.75);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  visibility:hidden;
-  z-index:9000;
-}
-
-.expo-modal-fail{
-  width:340px;
-  background:#ffffff;
-  border-radius:10px;
-  border:1px solid #cfcfcf;
-  text-align:center;
-  padding:28px 18px 26px 18px;
-  position:relative;
-}
-
-.expo-close-fail{
-  position:absolute;
-  top:12px;
-  right:14px;
-  font-size:22px;
-  cursor:pointer;
-}
-
-.expo-title-fail{
-  font-size:17px;
-  font-weight:700;
-  margin-bottom:14px;
-  line-height:1.6em;
-}
-
-.expo-text-fail{
-  font-size:15px;
-  line-height:1.9em;
-}
-
-.expo-btn-fail{
-  margin-top:24px;
-  width:230px;
-  height:48px;
-  border:2px solid #111;
-  border-radius:6px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-  font-size:17px;
-}
-
-
-/* ========== 順番待ち画面 ========== */
-
-.waitPage{
-  position:fixed;
-  inset:0;
-  background:#eee;
-  display:none;
-  text-align:center;
-  padding-top:40px;
-  z-index:9500;
-}
-
-.bar{
-  width:80%;
-  height:28px;
-  background:#444;
-  margin:30px auto;
-  display:flex;
-}
-
-.green{
-  width:0%;
-  background:#00cc66;
-}
-
-</style>
-
+  </style>
 </head>
-
-
 <body>
+  <header>
+    <div class="title-line1">EXPO風 やっちゃん誕生日会チケット</div>
+    <div class="title-line2">デジタル参加予約（モック）</div>
+  </header>
 
-<div class="header">EXPO風 予約ページ</div>
+  <main>
+    <!-- ===== メイン画面 ===== -->
+    <section id="main-screen">
+      <div class="page-title">2025年12月30日(火)</div>
+      <div class="page-sub">やっちゃん誕生日会の参加時間帯を選択してください。</div>
 
-<div class="container">
+      <div class="card" id="time-card">
+        <!-- JSで 8 行を埋め込む -->
+      </div>
+    </section>
 
-  <div class="row">
-    <div class="state ok"></div>
-    <div class="time">10:00 - 10:20</div>
-    <div class="selectBtn" onclick="reserve('10:00 - 10:20')"></div>
-  </div>
-
-  <div class="row">
-    <div class="state mid"></div>
-    <div class="time">11:00 - 11:20</div>
-    <div class="selectBtn" onclick="reserve('11:00 - 11:20')"></div>
-  </div>
-
-  <div class="row">
-    <div class="state ng"></div>
-    <div class="time">12:00 - 12:20</div>
-    <div class="selectBtn" onclick="reserve('12:00 - 12:20')"></div>
-  </div>
-
-</div>
-
-
-<!-- ========== 遅延画面 ========== -->
-<div class="waitMask" id="delayMask">
-  処理中です…<br>
-  しばらくお待ちください
-</div>
-
-
-<!-- ========== 成功モーダル ========== -->
-<div class="modalCover" id="modalSuccess">
-  <div class="expo-modal">
-    <div class="expo-close" onclick="closeSuccess()">×</div>
-
-    <div class="expo-title">
-      ＜ 空き枠先着 ＞<br>
-      パビリオン/イベントが<br>
-      予約されました
+    <div class="bottom-area">
+      <div class="selected-slot" id="selected-label">時間帯を選択してください</div>
+      <button id="submit-btn" class="btn-main" disabled>この時間で参加する →</button>
     </div>
+  </main>
 
-    <div class="expo-text" id="successTime">
+  <!-- ===== ローディング ===== -->
+  <div id="loading-overlay" class="overlay hidden">
+    <div class="loading-box">
+      通信中です…しばらくお待ちください
+      <div class="spinner"></div>
     </div>
-
-    <div class="expo-btn" onclick="closeSuccess()">とじる</div>
-  </div>
-</div>
-
-
-<!-- ========== 失敗モーダル ========== -->
-<div class="modalCover-fail" id="modalFail">
-  <div class="expo-modal-fail">
-
-    <div class="expo-close-fail" onclick="closeFail()">×</div>
-
-    <div class="expo-title-fail">
-      ＜ 当日登録 ＞<br>
-      パビリオン/イベントの予約が<br>
-      確保できませんでした
-    </div>
-
-    <div class="expo-text-fail">
-      お手数ですが、<br>
-      時間帯を再度選択してください
-    </div>
-
-    <div class="expo-btn-fail" onclick="closeFail()">とじる</div>
-
-  </div>
-</div>
-
-
-
-<!-- ========== 順番待ちページ ========== -->
-<div class="waitPage" id="waiting">
-  <h2>順番にご案内しております。</h2>
-
-  <p>
-    現在サイトが大変混雑しております。<br>
-    順番が来るまでお待ちください。
-  </p>
-
-  <div class="bar">
-    <div class="green" id="greenBar"></div>
   </div>
 
-  <div id="waitLine"></div>
-</div>
+  <!-- ===== 成功/失敗モーダル ===== -->
+  <div id="result-overlay" class="overlay hidden">
+    <div class="modal-box">
+      <div class="modal-close-x" id="result-close-x">×</div>
+      <div class="modal-title" id="result-title"></div>
+      <div class="modal-icon">📅</div>
+      <div class="modal-time" id="result-time"></div>
+      <div class="modal-body" id="result-body"></div>
+      <button class="modal-button" id="result-button">とじる</button>
+    </div>
+  </div>
 
+  <!-- ===== 待機画面 ===== -->
+  <section id="waiting-screen" class="hidden">
+    <div class="wait-card">
+      <div class="wait-logo">OSAKA 2025</div>
+      <div class="wait-title">順番にご案内しております。</div>
+      <p class="wait-text">
+        現在サイトが大変混雑しております。<br>
+        順番が来るまでお待ちいただくか、時間をおいて再度アクセスしてください。
+      </p>
+      <p class="wait-text">
+        お待ちいただく場合には、このページを閉じずお待ちください。<br>
+        順次ページ上でご案内開始の画面が表示されます。
+      </p>
 
+      <div class="wait-bar">
+        <div class="wait-bar-inner"></div>
+      </div>
 
+      <p class="wait-footer" id="wait-info"></p>
+    </div>
+  </section>
 
-<script>
+  <!-- ===== 致命的エラー画面 ===== -->
+  <section id="error-screen" class="hidden">
+    <div class="error-card">
+      <div class="error-title">ご確認ください</div>
+      <div class="error-text">
+        操作が完了できませんでした。<br><br>
+        しばらく時間をおいてから、もう一度はじめからお試しください。<br>
+        誕生日会の開催状況によっては、画面に表示された内容と異なる場合があります。<br><br>
+        エラーコード：YACCHAN_GP_DL_004_9_900_16
+      </div>
+      <button class="error-button" id="error-back-btn">やっちゃん誕生日会 トップへもどる</button>
+    </div>
+  </section>
 
-// ------- 予約処理 --------
-function reserve(time){
-  
-  document.getElementById("delayMask").style.display="flex";
+  <script>
+    const times = [
+      "18:00〜18:20",
+      "18:20〜18:40",
+      "18:40〜19:00",
+      "19:00〜19:20",
+      "19:20〜19:40",
+      "19:40〜20:00",
+      "20:00〜20:20",
+      "20:20〜20:40"
+    ];
 
-  setTimeout(()=>{
+    const WAIT_PROB = 0.4;        // 待機画面に飛ばされる確率
+    const FATAL_PROB = 0.15;      // いきなりエラー画面
+    let hasSucceededOnce = false; // 一度成功したら以降は成功しにくくする
 
-    document.getElementById("delayMask").style.display="none";
+    const mainScreen   = document.getElementById("main-screen");
+    const waitingScreen= document.getElementById("waiting-screen");
+    const errorScreen  = document.getElementById("error-screen");
+    const timeCard     = document.getElementById("time-card");
+    const selectedLabel= document.getElementById("selected-label");
+    const submitBtn    = document.getElementById("submit-btn");
+    const loadingOverlay = document.getElementById("loading-overlay");
 
-    let r = Math.random();
+    const resultOverlay = document.getElementById("result-overlay");
+    const resultTitle   = document.getElementById("result-title");
+    const resultTime    = document.getElementById("result-time");
+    const resultBody    = document.getElementById("result-body");
+    const resultButton  = document.getElementById("result-button");
+    const resultCloseX  = document.getElementById("result-close-x");
 
-    // 20% くらいで “順番待ち画面” に飛ばす
-    if(r < 0.2){
-        queueWait();
-        return;
+    const waitInfo      = document.getElementById("wait-info");
+    const errorBackBtn  = document.getElementById("error-back-btn");
+
+    let selectedSlotIndex = null;
+    let selectedTimeText  = "";
+
+    function createTimeRows() {
+      timeCard.innerHTML = "";
+      const statuses = randomStatuses();
+
+      times.forEach((t, idx) => {
+        const row = document.createElement("div");
+        row.className = "time-row";
+        row.dataset.index = idx;
+
+        const markSpan = document.createElement("span");
+        markSpan.className = "status-mark";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "time";
+        radio.className = "time-radio";
+
+        const label = document.createElement("div");
+        label.className = "time-label";
+        label.textContent = t;
+
+        const status = statuses[idx];
+        row.dataset.status = status;
+
+        if (status === "open") {
+          markSpan.textContent = "◯";
+          markSpan.classList.add("status-open");
+        } else if (status === "few") {
+          markSpan.textContent = "△";
+          markSpan.classList.add("status-few");
+        } else {
+          markSpan.textContent = "×";
+          markSpan.classList.add("status-full");
+          row.classList.add("full-row");
+          radio.disabled = true;
+        }
+
+        radio.addEventListener("change", () => {
+          selectedSlotIndex = idx;
+          selectedTimeText = t;
+          selectedLabel.textContent = "選択中： " + t;
+          submitBtn.disabled = false;
+        });
+
+        row.appendChild(markSpan);
+        row.appendChild(radio);
+        row.appendChild(label);
+        timeCard.appendChild(row);
+      });
+
+      selectedSlotIndex = null;
+      selectedTimeText = "";
+      selectedLabel.textContent = "時間帯を選択してください";
+      submitBtn.disabled = true;
     }
 
-    // 50% → 成功
-    if(r < 0.7){
-      document.getElementById("successTime").innerHTML =
-      "予約枠：" + time;
-      document.getElementById("modalSuccess").style.visibility="visible";
-    }
-    else{
-      document.getElementById("modalFail").style.visibility="visible";
-    }
+    // 状態をいい感じにバラけさせる
+    function randomStatuses() {
+      const statuses = [];
+      let nonFullCount = 0;
 
-  },1800);
-}
-
-
-// ------- 成功閉じる -------
-function closeSuccess(){
-  document.getElementById("modalSuccess").style.visibility="hidden";
-}
-
-
-// ------- 失敗閉じる -------
-function closeFail(){
-  document.getElementById("modalFail").style.visibility="hidden";
-}
-
-
-// ------- 順番待ち画面 -------
-function queueWait(){
-
-  document.getElementById("waiting").style.display="block";
-
-  let bar = document.getElementById("greenBar");
-  let text = document.getElementById("waitLine");
-
-  let count = 0;
-
-  let timer = setInterval(()=>{
-
-      count++;
-      bar.style.width = (count*10) + "%";
-      text.innerHTML = "処理中 … " + count + "/10";
-
-      if(count >= 10){
-          clearInterval(timer);
-          document.getElementById("waiting").style.display="none";
+      for (let i = 0; i < times.length; i++) {
+        const r = Math.random();
+        let s;
+        if (r < 0.4) {
+          s = "open";
+        } else if (r < 0.7) {
+          s = "few";
+        } else {
+          s = "full";
+        }
+        statuses.push(s);
+        if (s !== "full") nonFullCount++;
       }
 
-  },800);
+      // 全部×はさすがに遊べないので、1つだけ◯にする
+      if (nonFullCount === 0) {
+        const pick = Math.floor(Math.random() * statuses.length);
+        statuses[pick] = "open";
+      }
+      return statuses;
+    }
 
-}
+    function showLoading() {
+      loadingOverlay.classList.remove("hidden");
+    }
+    function hideLoading() {
+      loadingOverlay.classList.add("hidden");
+    }
 
-</script>
+    function goMain() {
+      waitingScreen.classList.add("hidden");
+      errorScreen.classList.add("hidden");
+      mainScreen.classList.remove("hidden");
+      createTimeRows();
+    }
 
+    function startFlow() {
+      if (selectedSlotIndex === null) return;
+
+      showLoading();
+      submitBtn.disabled = true;
+
+      const baseDelay = 3000 + Math.random() * 2000; // 3〜5秒
+      const r = Math.random();
+
+      setTimeout(() => {
+        hideLoading();
+
+        if (r < WAIT_PROB) {
+          // 待機画面
+          goWaitingThenResult();
+        } else if (r < WAIT_PROB + FATAL_PROB) {
+          // 致命的エラー
+          goFatalError();
+        } else {
+          // 直接 成否
+          showResultModal();
+        }
+      }, baseDelay);
+    }
+
+    function goWaitingThenResult() {
+      mainScreen.classList.add("hidden");
+      errorScreen.classList.add("hidden");
+      waitingScreen.classList.remove("hidden");
+
+      const queue = 200 + Math.floor(Math.random() * 600);
+      const etaMin = 1 + Math.floor(Math.random() * 3);
+
+      const now = new Date();
+      const eta = new Date(now.getTime() + etaMin * 60000);
+      const pad = (n) => (n < 10 ? "0" + n : "" + n);
+      const etaStr = pad(eta.getHours()) + ":" + pad(eta.getMinutes()) + " JST";
+
+      waitInfo.innerHTML =
+        "ご自身の前に並んでいる人数：" + queue + " 人<br>" +
+        "サイトにアクセスできる推定時刻：" + etaStr + "<br>" +
+        "待ち時間の目安：" + etaMin + " 分";
+
+      // 10秒後に勝手に結果へ
+      setTimeout(() => {
+        waitingScreen.classList.add("hidden");
+        mainScreen.classList.remove("hidden");
+        showResultModal();
+      }, 10000);
+    }
+
+    function goFatalError() {
+      mainScreen.classList.add("hidden");
+      waitingScreen.classList.add("hidden");
+      errorScreen.classList.remove("hidden");
+    }
+
+    function showResultModal() {
+      const afterWait = Math.random(); // 成功/失敗の決定
+      let isSuccess;
+
+      if (!hasSucceededOnce) {
+        isSuccess = afterWait < 0.35;  // 初回はやや高め
+      } else {
+        isSuccess = afterWait < 0.1;   // 2回目以降はほぼ失敗
+      }
+
+      if (isSuccess) hasSucceededOnce = true;
+
+      if (isSuccess) {
+        resultTitle.textContent = "＜ 空き枠先着 ＞\n誕生日会の参加予約が確定しました";
+        resultBody.textContent = "この時間帯で、やっちゃん誕生日会に参加できます。";
+      } else {
+        resultTitle.textContent = "定員を超えたため、ご希望の時間帯は\n選択できませんでした";
+        resultBody.textContent = "お手数ですが、来場日時を再度選択してください。";
+      }
+      resultTime.textContent = selectedTimeText;
+      resultOverlay.classList.remove("hidden");
+
+      // 失敗時は選択した枠を×に変えておく（イラつき演出）
+      if (!isSuccess && selectedSlotIndex !== null) {
+        const row = timeCard.querySelector(
+          '.time-row[data-index="' + selectedSlotIndex + '"]'
+        );
+        if (row) {
+          row.dataset.status = "full";
+          row.classList.add("full-row");
+          const mark = row.querySelector(".status-mark");
+          mark.textContent = "×";
+          mark.className = "status-mark status-full";
+          const radio = row.querySelector("input[type=radio]");
+          radio.checked = false;
+          radio.disabled = true;
+        }
+        selectedSlotIndex = null;
+        selectedTimeText = "";
+        selectedLabel.textContent = "時間帯を選択してください";
+        submitBtn.disabled = true;
+      }
+    }
+
+    function closeResultModal() {
+      resultOverlay.classList.add("hidden");
+      // 完全リセットはせず、ちょっとだけ状況が悪化した状態で続行させる
+    }
+
+    // ===== イベントバインド =====
+    document.addEventListener("DOMContentLoaded", () => {
+      createTimeRows();
+      submitBtn.addEventListener("click", startFlow);
+      resultButton.addEventListener("click", closeResultModal);
+      resultCloseX.addEventListener("click", closeResultModal);
+      errorBackBtn.addEventListener("click", goMain);
+    });
+  </script>
 </body>
 </html>
