@@ -2,135 +2,96 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>EXPO2025 デジタルチケット風</title>
+<title>やっちゃん誕生会 参加予約</title>
 
 <style>
+
 body{
+  font-family:"Yu Gothic","メイリオ",sans-serif;
+  background:#e6eff7;
   margin:0;
-  font-family:"Noto Sans JP",sans-serif;
-  background:#f5f5f5;
 }
 
-/* 画面 */
-.wrapper{
-  max-width:480px;
-  margin:0 auto;
-  background:#fff;
-  min-height:100vh;
-  position:relative;
-  padding-bottom:120px;
-}
-
-/* 見出し */
-.header{
-  padding:14px;
-  background:#005BAC;
+.topbar{
+  background:#007bcb;
   color:#fff;
-  font-size:16px;
+  padding:12px 18px;
+  font-size:18px;
+  font-weight:600;
 }
 
-/* 時間帯リスト */
+.wrapper{
+  width:900px;
+  margin:30px auto;
+  background:#fff;
+  border-radius:12px;
+  padding:18px 24px 28px;
+}
+
+.headerDay{
+  font-size:20px;
+  font-weight:700;
+}
+
+.sub{
+  font-size:13px;
+  color:#666;
+  margin-top:4px;
+}
+
+.slotBox{
+  margin-top:20px;
+}
+
 .slot{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  padding:14px;
-  margin:8px 14px;
-  border-radius:12px;
-  border:2px solid #ccc;
+  background:#fafafa;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:12px 16px;
+  margin-top:10px;
 }
 
 .icon{
-  font-size:22px;
-  width:34px;
+  width:26px;
+  font-size:20px;
+  font-weight:900;
+  text-align:center;
+  margin-right:14px;
+}
+
+.blue{color:#007bff;}
+.yellow{color:#ffaf00;}
+.red{color:#d60000;}
+
+.radio{
+  transform:scale(1.4);
+  margin-right:16px;
 }
 
 .time{
-  flex:1;
-  text-align:center;
-  font-size:17px;
-}
-
-/* モーダル */
-.modal-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.45);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-overlay.show{display:flex;}
-
-.expo-modal{
-  width:88%;
-  max-width:420px;
-  background:#fff;
-  border-radius:12px;
-  border:4px solid #000;
-  padding:28px 20px 32px;
-  position:relative;
-  text-align:center;
-}
-
-.close-btn{
-  position:absolute;
-  right:14px;
-  top:10px;
-  font-size:24px;
-  border:none;
-  background:none;
-}
-
-.modal-title{
   font-size:18px;
-  font-weight:700;
-  margin-bottom:16px;
-  line-height:1.6;
 }
 
-.modal-icon{
-  font-size:60px;
-  margin:14px 0;
-}
-
-.modal-info{font-size:16px;margin-bottom:26px;}
-.modal-text{font-size:15px;margin-bottom:26px;}
-
-.expo-btn{
-  width:90%;
-  height:54px;
-  border:3px solid #000;
-  border-radius:6px;
-  font-size:18px;
-  background:#fff;
-}
-
-.expo-btn.red{
-  border-color:#d00;
-}
-
-/* 待機画面 */
-.waiting{
+.bottomButton{
+  width:900px;
+  margin:40px auto 0;
+  background:#e60012;
+  color:#fff;
   text-align:center;
-  padding:30px;
-  display:none;
-}
-
-.bar{
-  width:85%;
-  margin:18px auto;
-  height:22px;
-  background:#ddd;
+  padding:14px 0;
   border-radius:8px;
-  overflow:hidden;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-.fill{
-  width:0%;
-  height:100%;
-  background:#1cb841;
+.notice{
+  text-align:center;
+  margin-top:6px;
+  color:#555;
+  font-size:12px;
 }
 
 </style>
@@ -138,152 +99,69 @@ body{
 
 <body>
 
+<div class="topbar">
+  やっちゃん誕生会 参加予約
+</div>
+
 <div class="wrapper">
 
-<div class="header">EXPO2025 デジタルチケット</div>
-
-<!-- 時間帯リスト -->
-<div id="main">
-
-<div class="slot" onclick="clickSlot('11:00-11:20')">
-  <div class="icon">⭕</div>
-  <div class="time">11:00–11:20</div>
-</div>
-
-<div class="slot" onclick="clickSlot('11:20-11:40')">
-  <div class="icon">🔺</div>
-  <div class="time">11:20–11:40</div>
-</div>
-
-<div class="slot" onclick="clickSlot('11:40-12:00')">
-  <div class="icon">❌</div>
-  <div class="time">11:40–12:00</div>
-</div>
-
-<div class="slot" onclick="clickSlot('12:00-12:20')">
-  <div class="icon">⭕</div>
-  <div class="time">12:00–12:20</div>
-</div>
-
-<div class="slot" onclick="clickSlot('12:20-12:40')">
-  <div class="icon">🔺</div>
-  <div class="time">12:20–12:40</div>
-</div>
-
-<div class="slot" onclick="clickSlot('12:40-13:00')">
-  <div class="icon">❌</div>
-  <div class="time">12:40–13:00</div>
-</div>
-
-</div>
-
-<!-- 待機画面 -->
-<div class="waiting" id="wait">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Expo_2025_Logo.svg/512px-Expo_2025_Logo.svg.png" width="120"><br><br>
-  <b>順番にご案内しております。</b><br><br>
-  現在サイトが大変混雑しております。<br>
-  しばらくお待ちください。<br><br>
-
-  <div class="bar">
-    <div class="fill" id="fill"></div>
+  <div class="headerDay">
+    2025年12月30日(火)
   </div>
 
-  <div id="waitText">待ち時間の目安：1分</div>
-</div>
-
-</div>
-
-<!-- モーダル -->
-<div class="modal-overlay" id="modal">
-  <div class="expo-modal" id="modalBox">
-    <button class="close-btn" onclick="closeModal()">✕</button>
-    <p class="modal-title" id="modalTitle"></p>
-    <div class="modal-icon">📅🕒</div>
-    <p class="modal-info" id="modalInfo"></p>
-    <p class="modal-text" id="modalText"></p>
-    <button class="expo-btn" id="modalBtn" onclick="closeModal()">とじる</button>
+  <div class="sub">
+    やっちゃん誕生会 参加時間帯を選んでください
   </div>
+
+  <div class="slotBox">
+
+    <div class="slot">
+      <div class="icon blue">○</div>
+      <input class="radio" type="radio" name="time">
+      <div class="time">18:00〜</div>
+    </div>
+
+    <div class="slot">
+      <div class="icon yellow">△</div>
+      <input class="radio" type="radio" name="time">
+      <div class="time">18:20〜</div>
+    </div>
+
+    <div class="slot">
+      <div class="icon blue">○</div>
+      <input class="radio" type="radio" name="time">
+      <div class="time">18:40〜</div>
+    </div>
+
+    <div class="slot">
+      <div class="icon blue">○</div>
+      <input class="radio" type="radio" name="time">
+      <div class="time">19:00〜</div>
+    </div>
+
+    <div class="slot">
+      <div class="icon yellow">△</div>
+      <input class="radio" type="radio" name="time">
+      <div class="time">19:20〜</div>
+    </div>
+
+    <div class="slot">
+      <div class="icon red">×</div>
+      <input class="radio" disabled>
+      <div class="time">19:40〜</div>
+    </div>
+
+  </div>
+
 </div>
 
-<script>
-function clickSlot(time){
+<div class="bottomButton">
+  この時間で参加する →
+</div>
 
-  const r = Math.random();
-
-  // 10% → 待機画面
-  if(r < 0.1){
-    showWait(time);
-    return;
-  }
-
-  // 30% → 失敗
-  if(r < 0.4){
-    showFail();
-    return;
-  }
-
-  // 60% → 成功
-  showSuccess(time);
-}
-
-function showSuccess(time){
-  showModal(
-    "＜ 空き枠先着 ＞<br>パビリオン/イベントが予約されました",
-    "ブルーオーシャンドーム " + time,
-    ""
-  );
-}
-
-function showFail(){
-  showModal(
-    "定員を超えたため、ご希望の<br>時間帯は選択できませんでした",
-    "",
-    "お手数ですが、来場日時を再度選択してください。",
-    true
-  );
-}
-
-function showModal(t, info, text, red=false){
-  document.getElementById("modalTitle").innerHTML = t;
-  document.getElementById("modalInfo").innerHTML = info;
-  document.getElementById("modalText").innerHTML = text;
-
-  const btn = document.getElementById("modalBtn");
-  if(red){
-    btn.classList.add("red");
-  }else{
-    btn.classList.remove("red");
-  }
-
-  document.getElementById("modal").classList.add("show");
-}
-
-function closeModal(){
-  document.getElementById("modal").classList.remove("show");
-}
-
-/* 待機画面 */
-function showWait(time){
-  document.getElementById("main").style.display="none";
-  document.getElementById("wait").style.display="block";
-
-  let p = 0;
-  const bar = document.getElementById("fill");
-
-  const timer = setInterval(()=>{
-    p+=5;
-    bar.style.width = p+"%";
-    if(p>=100){
-      clearInterval(timer);
-      document.getElementById("wait").style.display="none";
-      document.getElementById("main").style.display="block";
-
-      // 最終的にどちらか
-      Math.random()<0.5 ? showSuccess(time) : showFail();
-    }
-  },200);
-}
-</script>
+<div class="notice">
+  お早めにご回答ください
+</div>
 
 </body>
 </html>
