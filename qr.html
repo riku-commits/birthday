@@ -50,3 +50,28 @@
 
 </body>
 </html>
+
+
+<p>この画面をスクリーンショットして保存してください。</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+  // ランダムID（本物っぽいコードを毎回生成）
+  const randomId = "BIRTHDAY-" + 
+      Math.random().toString(36).substring(2,6).toUpperCase() + "-" +
+      Math.random().toString(36).substring(2,6).toUpperCase();
+
+  // QR生成
+  new QRCode(document.getElementById("qrcode"), {
+    text: randomId,
+    width: 240,
+    height: 240,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+</script>
+
+</body>
+</html>
