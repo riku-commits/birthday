@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>やっちゃん誕生会 参加予約</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -11,7 +11,7 @@ body{
   font-family:"Yu Gothic","メイリオ",sans-serif;
 }
 
-/* メイン */
+/* ---------- メイン画面 ---------- */
 .container{
   width:720px;
   max-width:95%;
@@ -21,8 +21,8 @@ body{
   padding:30px;
 }
 
-.title{ font-size:20px; font-weight:bold; }
-.sub{ font-size:12px; color:#555; margin-bottom:15px; }
+.title{ font-weight:bold; font-size:20px; }
+.sub{ color:#555; font-size:12px; margin-bottom:20px; }
 
 .slot{
   border:1px solid #ddd;
@@ -35,7 +35,7 @@ body{
 }
 
 .icon{
-  font-size:24px;
+  font-size:22px;
   width:30px;
   text-align:center;
   font-weight:bold;
@@ -56,197 +56,232 @@ body{
   cursor:pointer;
 }
 
-/* ===============================
-   ▼ 本家風モーダル
-=============================== */
+/* ---------- 待機画面（EXPO風） ---------- */
+.waitScreen{
+  display:none;
+  text-align:center;
+  padding:40px;
+  background:#333;
+  color:white;
+}
+
+.waitBox{
+  background:#444;
+  padding:20px;
+  border-radius:10px;
+  margin-top:20px;
+}
+
+.barBox{
+  width:100%;
+  background:#666;
+  padding:6px;
+  border-radius:6px;
+  margin:15px 0;
+}
+
+.bar{
+  height:14px;
+  background:#1aff5f;
+  width:5%;
+  animation: progress 10s infinite linear;
+}
+
+@keyframes progress{
+  0%{width:5%;}
+  50%{width:95%;}
+  100%{width:5%;}
+}
+
+/* ---------- エラー & モーダル ---------- */
+.errorPage{ display:none; text-align:center; padding:40px; }
+
 .modalBg{
   position:fixed;
   inset:0;
-  backdrop-filter:blur(1px);
-  background:rgba(0,0,0,.45);
+  background:rgba(0,0,0,0.6);
   display:none;
   justify-content:center;
   align-items:center;
 }
 
 .modal{
+  background:white;
+  padding:25px;
+  border-radius:10px;
   width:340px;
-  background:#fff;
-  border-radius:8px;
-  padding:22px;
   text-align:center;
-  position:relative;
 }
 
-.closeBtn{
-  position:absolute;
-  right:12px;
-  top:10px;
-  font-size:26px;
-  cursor:pointer;
-}
-
-.big-text{
-  font-size:17px;
-  font-weight:bold;
-  line-height:30px;
-}
+.big-text{ font-size:18px; font-weight:bold; line-height:35px; }
 
 .modal button{
-  width:90%;
-  padding:14px;
-  margin-top:15px;
+  width:100%;
+  padding:12px;
+  margin-top:10px;
   border:1px solid #333;
   border-radius:6px;
-  background:#fff;
+  background:white;
 }
 
-/* ===============================
-   ▼ 待機画面
-=============================== */
-.waitScreen{
-  display:none;
-  background:#333;
-  color:white;
-  padding:35px;
-  text-align:center;
-}
-
-/* ===============================
-   ▼ エラー画面
-=============================== */
-.errorPage{
-  display:none;
-  padding:40px;
-  text-align:center;
-}
 </style>
 </head>
 
 <body>
 
-<!-- メイン画面 -->
 <div id="mainScreen" class="container">
 
 <div class="title">2025年12月30日(火)</div>
 <div class="sub">やっちゃん誕生日会 参加時間帯を選んでください</div>
 
+<!-- 8枠 -->
 <div class="slot"><span class="icon ok">○</span><input type="radio" name="time" value="18:00">18:00〜</div>
 <div class="slot"><span class="icon mid">△</span><input type="radio" name="time" value="18:20">18:20〜</div>
 <div class="slot"><span class="icon ok">○</span><input type="radio" name="time" value="18:40">18:40〜</div>
 <div class="slot"><span class="icon ok">○</span><input type="radio" name="time" value="19:00">19:00〜</div>
 <div class="slot"><span class="icon mid">△</span><input type="radio" name="time" value="19:20">19:20〜</div>
-<div class="slot"><span class="icon ng">×</span><input disabled>19:40〜</div>
+
+<!-- 満員スペース修正済み -->
+<div class="slot">
+<span class="icon ng">×</span>
+<input type="radio" disabled style="opacity:0;pointer-events:none;">
+19:40〜
+</div>
+
 <div class="slot"><span class="icon ok">○</span><input type="radio" name="time" value="20:00">20:00〜</div>
 <div class="slot"><span class="icon mid">△</span><input type="radio" name="time" value="20:20">20:20〜</div>
 
 <div id="submitButton" class="bottomButton">
 この時間で参加する →
 </div>
+
 </div>
 
-<!-- ===============================
-    ▼ 待機画面
-================================ -->
+<!-- ▼ 待機画面（本家風） -->
 <div id="waitScreen" class="waitScreen">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Expo_2025_logo.svg/512px-Expo_2025_logo.svg.png" width="160">
+
 <h2>順番にご案内しております。</h2>
-<p>現在サイトが大変混雑しております。<br>しばらくお待ちください…</p>
-<div>⏳ 待ち時間目安：10秒</div>
+<p>
+現在サイトが大変混雑しております。<br>
+順番が来るまでこのままお待ちください。
+</p>
+
+<div class="waitBox">
+<div class="barBox">
+<div class="bar"></div>
 </div>
 
-<!-- ===============================
-    ▼ エラー画面
-================================ -->
+<div id="queuePeople">ご自身の前に並んでいる人数： 470</div>
+<div id="estimate">サイトにアクセスできる推定時刻： 計算中…</div>
+<div id="remain">待ち時間の目安： 計測中…</div>
+</div>
+</div>
+
+<!-- ▼ エラー -->
 <div id="errorScreen" class="errorPage">
 <h2>ご確認ください</h2>
 <p>処理を完了できませんでした。</p>
-<button onclick="restart()">トップへ戻る</button>
+<button onclick="restart()">トップへもどる</button>
 </div>
 
-<!-- ===============================
-    ▼ 予約成功（本家コピー）
-================================ -->
+<!-- ▼ 成功 -->
 <div id="success" class="modalBg">
 <div class="modal">
-<div class="closeBtn" onclick="closeAll()">×</div>
-
 <div class="big-text">
 ＜ 空き枠先着 ＞<br>
-パビリオン／イベントが<br>
-予約されました
+誕生日会の参加予約が<br>
+確定しました！
 </div>
-
 <br>
 <div id="successTime"></div>
-
 <button onclick="closeAll()">とじる</button>
 </div>
 </div>
 
-<!-- ===============================
-    ▼ 予約失敗（本家コピー）
-================================ -->
+<!-- ▼ 失敗 -->
 <div id="fail" class="modalBg">
 <div class="modal">
-<div class="closeBtn" onclick="closeAll()">×</div>
-
 <div class="big-text">
 ＜ 空き枠先着 ＞<br>
-パビリオン／イベントの予約が<br>
-確保できませんでした
+予約が確保できませんでした
 </div>
-
 <br>
-お手数ですが、<br>
-パビリオン／催事を再度選択してください。
-
+時間帯を再度選択してください。
 <button onclick="closeAll()">とじる</button>
 </div>
 </div>
 
-
 <script>
-const btn=document.getElementById("submitButton");
 
-btn.addEventListener("click",()=>{
+const btn = document.getElementById("submitButton");
 
- const checked=document.querySelector('input[name="time"]:checked');
- if(!checked){ alert("時間帯を選択してください。"); return; }
+btn.addEventListener("click", ()=>{
 
- btn.innerText="処理中…";
- btn.style.opacity="0.6";
- btn.style.pointerEvents="none";
+ const checked = document.querySelector('input[name="time"]:checked');
+ if(!checked){
+   alert("時間帯を選択してください。");
+   return;
+ }
 
- const fate=Math.random(); // 運命
+ btn.innerText = "通信中…";
+ btn.style.opacity = "0.6";
+ btn.style.pointerEvents = "none";
 
+ showWait();
+
+ // イライラ最低 12秒は絶対待たせる
  setTimeout(()=>{
-
-   if(fate < 0.30){ showWait(); return;}     // 30% 待機
-   if(fate < 0.55){ showError(); return;}    // 25% エラー
-   if(fate < 0.99){ showFail(); return;}     // 44% 失敗
-   showSuccess(checked.value);              // 1% 神当選
-
- },1200);
+   decideFate(checked.value);
+ },12000);
 });
 
 function showWait(){
  document.getElementById("mainScreen").style.display="none";
  document.getElementById("waitScreen").style.display="block";
 
+ // 疑似人数と残り時間演出
+ let remain = 70 + Math.floor(Math.random()*60);
+ let people = 400 + Math.floor(Math.random()*200);
+
+ const q = document.getElementById("queuePeople");
+ const r = document.getElementById("remain");
+ const e = document.getElementById("estimate");
+
+ q.innerText = "ご自身の前に並んでいる人数： " + people;
+ r.innerText = "待ち時間の目安： " + Math.floor(remain/60) + "分";
+ e.innerText = "サイトにアクセスできる推定時刻： 計測中…";
+}
+
+function decideFate(time){
+
+ const fate = Math.random();
+
+ if(fate < 0.01){
+   showSuccess(time); return;
+ }
+
+ if(fate < 0.40){
+   showFail(); return;
+ }
+
+ if(fate < 0.80){
+   showError(); return;
+ }
+
+ // さらに待たされる地獄
  setTimeout(()=>{
-  document.getElementById("waitScreen").style.display="none";
-  document.getElementById("mainScreen").style.display="block";
-  resetBtn();
- },10000);
+   showFail();
+ },8000);
 }
 
 function showError(){
- document.getElementById("mainScreen").style.display="none";
+ document.getElementById("waitScreen").style.display="none";
  document.getElementById("errorScreen").style.display="block";
 }
 
 function showSuccess(time){
- document.getElementById("successTime").innerText="予約時間 "+time;
+ document.getElementById("successTime").innerText="参加時間 "+time;
  document.getElementById("success").style.display="flex";
  resetBtn();
 }
@@ -258,6 +293,7 @@ function showFail(){
 
 function closeAll(){
  document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
+ document.getElementById("mainScreen").style.display="block";
 }
 
 function restart(){ location.reload(); }
@@ -267,6 +303,7 @@ function resetBtn(){
  btn.style.opacity="1";
  btn.style.pointerEvents="auto";
 }
+
 </script>
 
 </body>
