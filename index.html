@@ -1,37 +1,52 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>EXPO2025 予約シミュレーター</title>
+<!-- ▼ 成功ポップアップ（本家寄せ） -->
+<div id="successPopup" class="modalBg">
+  <div class="popupCard">
+    <div class="popupTitle">
+      ＜ 空き枠発見 ＞<br>
+      パビリオン/イベントが<br>
+      予約されました
+    </div>
+
+    <div class="popupIcon">
+      📅🕒
+    </div>
+
+    <div class="popupTime">
+      参加時間：<span id="successTimeText"></span>
+    </div>
+
+    <button class="popupBtn">とじる</button>
+  </div>
+</div>
+
+
+<!-- ▼ QR画面 -->
+<div id="qrShow" class="modalBg">
+  <div class="modal">
+    <div class="big-text">入場用QRコード</div>
+
+    <div class="qrOuter">
+      <!-- ▼ より本物寄せQR -->
+      <div class="realQR">
+        <div class="finder tl"></div>
+        <div class="finder tr"></div>
+        <div class="finder bl"></div>
+        <canvas id="qrCanvas" width="220" height="220"></canvas>
+      </div>
+    </div>
+
+    <p>
+      スクリーンショットを保存し、<br>
+      当日の入場時に提示してください。
+    </p>
+
+    <button onclick="closeAll()">とじる</button>
+  </div>
+</div>
 
 <style>
-body{
-  background:#e9f0ff;
-  font-family:Arial, "ヒラギノ角ゴ ProN", Meiryo;
-  text-align:center;
-}
+/* すでにある modalBg は流用 */
 
-/* 共通 */
-.modalBg{
-  position:fixed;
-  inset:0;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  background:rgba(0,0,0,0.6);
-  z-index:9999;
-}
-
-.modal{
-  background:white;
-  padding:28px 20px;
-  border-radius:14px;
-  width:310px;
-}
-
-/************
- 成功ポップアップ
-************/
 .popupCard{
   background:white;
   border-radius:12px;
@@ -64,35 +79,7 @@ body{
   background:white;
 }
 
-/************
- 待機ページ
-************/
-.waitBox{
-  background:#303030;
-  color:white;
-  padding:40px 20px;
-  border-radius:12px;
-  width:70%;
-  margin:auto;
-}
-
-.barOuter{
-  width:90%;
-  height:20px;
-  margin:20px auto;
-  background:#777;
-  border-radius:4px;
-}
-
-.barInner{
-  width:30%;
-  height:100%;
-  background:#39ff5a;
-}
-
-/************
- QR画面
-************/
+/* QR強化 */
 .qrOuter{
   padding:12px;
   border:3px solid #111;
@@ -105,6 +92,7 @@ body{
   position:relative;
 }
 
+/* 3つの角の黒枠（本物らしさの超重要要素） */
 .finder{
   width:60px;
   height:60px;
@@ -114,149 +102,12 @@ body{
 .tl{top:0;left:0;}
 .tr{top:0;right:0;}
 .bl{bottom:0;left:0;}
-
-.big-text{
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:10px;
-}
 </style>
-</head>
-
-<body>
-
-<h2>やっちゃん誕生会 予約ボタン</h2>
-<button onclick="startReservation()" style="padding:14px 26px;font-size:18px;">
-  この時間で参加する →
-</button>
-
-<!-- ▼ 待機 -->
-<div id="waitPage" class="modalBg">
-  <div class="waitBox">
-    <h2>順番にご案内しております。</h2>
-    <p>現在サイトが大変混雑しております。</p>
-
-    <div class="barOuter">
-      <div class="barInner"></div>
-    </div>
-
-    <p>ご自身の前に並んでいる人数：433</p>
-    <p>待ち時間の目安：1分</p>
-  </div>
-</div>
-
-
-<!-- ▼ 成功ポップアップ -->
-<div id="successPopup" class="modalBg">
-  <div class="popupCard">
-    <div class="popupTitle">
-      ＜ 空き枠発見 ＞<br>
-      パビリオン/イベントが<br>
-      予約されました
-    </div>
-
-    <div class="popupIcon">
-      📅🕒
-    </div>
-
-    <div class="popupTime">
-      参加時間：<span id="successTimeText">19:20</span>
-    </div>
-
-    <button class="popupBtn">とじる</button>
-  </div>
-</div>
-
-
-<!-- ▼ エラー -->
-<div id="errorPage" class="modalBg">
-  <div class="modal">
-    <h2>エラーが発生しました</h2>
-    <p>エラーが発生したため処理を中断しました。</p>
-    <p>(エラーコード：E_SW_GP_DL_004_9_900_16)</p>
-    <button onclick="closeAll()">トップへもどる</button>
-  </div>
-</div>
-
-
-<!-- ▼ 予約失敗 -->
-<div id="failPage" class="modalBg">
-  <div class="modal">
-    <h2>＜ 空き枠先着 ＞</h2>
-    <p>パビリオン/イベントの予約が<br>確保できませんでした</p>
-    <p>パビリオン/催事を再度選択してください</p>
-    <button onclick="closeAll()">とじる</button>
-  </div>
-</div>
-
-
-<!-- ▼ QR成功 -->
-<div id="qrShow" class="modalBg">
-  <div class="modal">
-    <div class="big-text">入場用QRコード</div>
-
-    <div class="qrOuter">
-      <div class="realQR">
-        <div class="finder tl"></div>
-        <div class="finder tr"></div>
-        <div class="finder bl"></div>
-        <canvas id="qrCanvas" width="220" height="220"></canvas>
-      </div>
-    </div>
-
-    <p>
-      スクリーンショットを保存し、<br>
-      当日の入場時に提示してください。
-    </p>
-
-    <button onclick="closeAll()">とじる</button>
-  </div>
-</div>
-
 
 <script>
-/*************************************************
-  ▼ ▼ ▼ ここで確率変更できます ▼ ▼ ▼
-*************************************************/
-
-// 本番仕様
-// const P_WAIT = 0.10; 
-// const P_ERROR = 0.10;
-// const P_SUCCESS = 0.01;
-
-// テスト用（100%成功）
-const P_WAIT = 0.00;
-const P_ERROR = 0.00;
-const P_SUCCESS = 1.00;
-
-
-/*************************************************/
-
-function startReservation(){
-
-  setTimeout(()=> decide(), 3000);
-}
-
-function decide(){
-  let r = Math.random();
-
-  if(r < P_SUCCESS){
-    showSuccess();
-  }
-  else if(r < P_SUCCESS + P_WAIT){
-    showWait();
-  }
-  else if(r < P_SUCCESS + P_WAIT + P_ERROR){
-    showError();
-  }
-  else{
-    showFail();
-  }
-}
-
-
-/**************** 成功 → 10秒後QR ****************/
-function showSuccess(){
+// ---- 予約成功処理 ----
+function showSuccess(time){
+  document.getElementById("successTimeText").innerText = time;
   document.getElementById("successPopup").style.display="flex";
 
   setTimeout(()=>{
@@ -265,31 +116,7 @@ function showSuccess(){
   },10000);
 }
 
-
-/**************** 待機 ****************/
-function showWait(){
-  document.getElementById("waitPage").style.display="flex";
-
-  setTimeout(()=>{
-    document.getElementById("waitPage").style.display="none";
-    showFail();
-  },8000);
-}
-
-
-/**************** 失敗 ****************/
-function showFail(){
-  document.getElementById("failPage").style.display="flex";
-}
-
-
-/**************** エラー ****************/
-function showError(){
-  document.getElementById("errorPage").style.display="flex";
-}
-
-
-/**************** QR生成 ****************/
+// ---- 本物寄せQR生成（ドットをランダム描画） ----
 function showQR(){
 
   const qr = document.getElementById("qrCanvas");
@@ -302,6 +129,7 @@ function showQR(){
   for(let y=0; y<22; y++){
     for(let x=0; x<22; x++){
 
+      // 角の finder を避ける
       if((x<5 && y<5) || (x>16 && y<5) || (x<5 && y>16)) continue;
 
       if(Math.random()>0.55){
@@ -313,12 +141,7 @@ function showQR(){
   document.getElementById("qrShow").style.display="flex";
 }
 
-
-/**************** 共通 ****************/
 function closeAll(){
   document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
 }
 </script>
-
-</body>
-</html>
