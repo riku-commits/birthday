@@ -1,97 +1,112 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>やっちゃん誕生会 参加予約</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-
 body{
-  font-family:"Yu Gothic","メイリオ",sans-serif;
-  background:#e6eff7;
-  margin:0;
+  background:#e7f1ff;
+  font-family: "Yu Gothic","メイリオ",sans-serif;
 }
 
-.topbar{
-  background:#007bcb;
-  color:#fff;
-  padding:12px 18px;
-  font-size:18px;
-  font-weight:600;
+.container{
+  width:720px;
+  max-width:95%;
+  margin:40px auto;
+  background:white;
+  border-radius:10px;
+  padding:30px;
 }
 
-.wrapper{
-  width:900px;
-  margin:30px auto;
-  background:#fff;
-  border-radius:12px;
-  padding:18px 24px 28px;
-}
-
-.headerDay{
+.title{
+  font-weight:bold;
   font-size:20px;
-  font-weight:700;
 }
 
 .sub{
-  font-size:13px;
-  color:#666;
-  margin-top:4px;
-}
-
-.slotBox{
-  margin-top:20px;
+  color:#555;
+  font-size:12px;
+  margin-bottom:20px;
 }
 
 .slot{
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:12px;
+  margin:10px 0;
   display:flex;
   align-items:center;
-  background:#fafafa;
-  border:1px solid #ddd;
-  border-radius:10px;
-  padding:12px 16px;
-  margin-top:10px;
+  gap:15px;
 }
 
 .icon{
-  width:26px;
-  font-size:20px;
-  font-weight:900;
+  font-size:22px;
+  width:30px;
   text-align:center;
-  margin-right:14px;
+  font-weight:bold;
 }
 
-.blue{color:#007bff;}
-.yellow{color:#ffaf00;}
-.red{color:#d60000;}
-
-.radio{
-  transform:scale(1.4);
-  margin-right:16px;
-}
-
-.time{
-  font-size:18px;
-}
+.ok{color:#007BFF;}
+.mid{color:#e6a400;}
+.ng{color:#ff2b2b;}
 
 .bottomButton{
-  width:900px;
-  margin:40px auto 0;
-  background:#e60012;
-  color:#fff;
-  text-align:center;
-  padding:14px 0;
+  background:#d80000;
+  color:white;
+  padding:18px;
+  margin-top:25px;
   border-radius:8px;
+  text-align:center;
   font-size:18px;
-  font-weight:bold;
   cursor:pointer;
 }
 
-.notice{
+.modalBg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.modal{
+  background:white;
+  padding:25px;
+  border-radius:10px;
+  width:340px;
   text-align:center;
-  margin-top:6px;
-  color:#555;
-  font-size:12px;
+}
+
+.big-text{
+  font-size:18px;
+  font-weight:bold;
+  line-height:35px;
+}
+
+.modal button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:1px solid #333;
+  border-radius:6px;
+  background:white;
+}
+
+.waitScreen{
+  display:none;
+  text-align:center;
+  color:white;
+  background:#333;
+  padding:40px;
+}
+
+.errorPage{
+  display:none;
+  text-align:center;
+  padding:40px;
 }
 
 </style>
@@ -99,69 +114,188 @@ body{
 
 <body>
 
-<div class="topbar">
-  やっちゃん誕生会 参加予約
+<div id="mainScreen" class="container">
+
+<div class="title">2025年12月30日(火)</div>
+<div class="sub">やっちゃん誕生日会 参加時間帯を選んでください</div>
+
+<!-- 8枠固定 -->
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="18:00">18:00〜
 </div>
 
-<div class="wrapper">
-
-  <div class="headerDay">
-    2025年12月30日(火)
-  </div>
-
-  <div class="sub">
-    やっちゃん誕生会 参加時間帯を選んでください
-  </div>
-
-  <div class="slotBox">
-
-    <div class="slot">
-      <div class="icon blue">○</div>
-      <input class="radio" type="radio" name="time">
-      <div class="time">18:00〜</div>
-    </div>
-
-    <div class="slot">
-      <div class="icon yellow">△</div>
-      <input class="radio" type="radio" name="time">
-      <div class="time">18:20〜</div>
-    </div>
-
-    <div class="slot">
-      <div class="icon blue">○</div>
-      <input class="radio" type="radio" name="time">
-      <div class="time">18:40〜</div>
-    </div>
-
-    <div class="slot">
-      <div class="icon blue">○</div>
-      <input class="radio" type="radio" name="time">
-      <div class="time">19:00〜</div>
-    </div>
-
-    <div class="slot">
-      <div class="icon yellow">△</div>
-      <input class="radio" type="radio" name="time">
-      <div class="time">19:20〜</div>
-    </div>
-
-    <div class="slot">
-      <div class="icon red">×</div>
-      <input class="radio" disabled>
-      <div class="time">19:40〜</div>
-    </div>
-
-  </div>
-
+<div class="slot">
+<span class="icon mid">△</span>
+<input type="radio" name="time" value="18:20">18:20〜
 </div>
 
-<div class="bottomButton">
-  この時間で参加する →
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="18:40">18:40〜
 </div>
 
-<div class="notice">
-  お早めにご回答ください
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="19:00">19:00〜
 </div>
+
+<div class="slot">
+<span class="icon mid">△</span>
+<input type="radio" name="time" value="19:20">19:20〜
+</div>
+
+<div class="slot">
+<span class="icon ng">×</span>
+<input type="radio" disabled>19:40〜
+</div>
+
+<div class="slot">
+<span class="icon ok">○</span>
+<input type="radio" name="time" value="20:00">20:00〜
+</div>
+
+<div class="slot">
+<span class="icon mid">△</span>
+<input type="radio" name="time" value="20:20">20:20〜
+</div>
+
+<div id="submitButton" class="bottomButton">
+この時間で参加する →
+</div>
+</div>
+
+<!-- ▼ 待機画面 -->
+<div id="waitScreen" class="waitScreen">
+<h2>順番にご案内しております。</h2>
+<p>現在サイトが大変混雑しております。<br>しばらくお待ちください…</p>
+<div>⏳ 待ち時間目安：10秒</div>
+</div>
+
+<!-- ▼ エラー画面 -->
+<div id="errorScreen" class="errorPage">
+<h2>ご確認ください</h2>
+<p>処理を完了できませんでした。</p>
+<button onclick="restart()">トップへもどる</button>
+</div>
+
+<!-- ▼ 予約成功モーダル -->
+<div id="success" class="modalBg">
+<div class="modal">
+<div class="big-text">
+＜ 空き枠先着 ＞<br>
+誕生日会の参加予約が<br>
+確定しました！
+</div>
+<br>
+<div id="successTime"></div>
+<button onclick="closeAll()">とじる</button>
+</div>
+</div>
+
+<!-- ▼ 予約失敗モーダル -->
+<div id="fail" class="modalBg">
+<div class="modal">
+<div class="big-text">
+定員を超えたため、<br>
+ご希望の時間帯は<br>
+選択できませんでした
+</div>
+<br>
+お手数ですが、時間帯を再度選択してください。
+<button onclick="closeAll()">とじる</button>
+</div>
+</div>
+
+<script>
+
+const btn = document.getElementById("submitButton");
+
+btn.addEventListener("click", ()=>{
+
+ const checked = document.querySelector('input[name="time"]:checked');
+ if(!checked){
+   alert("時間帯を選択してください。");
+   return;
+ }
+
+ // 本家イライラ仕様
+ btn.innerText = "処理中…";
+ btn.style.opacity = "0.6";
+ btn.style.pointerEvents = "none";
+
+ // 運命判定
+ const fate = Math.random();
+
+ setTimeout(()=>{
+
+   // 20% 強制待機
+   if(fate < 0.2){
+     showWait();
+     return;
+   }
+
+   // 20% エラー
+   if(fate < 0.4){
+     showError();
+     return;
+   }
+
+   // 30% 失敗
+   if(fate < 0.7){
+     showFail();
+     return;
+   }
+
+   // 30% 成功
+   showSuccess(checked.value);
+
+ },1200);
+});
+
+
+function showWait(){
+ document.getElementById("mainScreen").style.display="none";
+ document.getElementById("waitScreen").style.display="block";
+
+ setTimeout(()=>{
+   document.getElementById("waitScreen").style.display="none";
+   document.getElementById("mainScreen").style.display="block";
+   resetBtn();
+ },10000);
+}
+
+function showError(){
+ document.getElementById("mainScreen").style.display="none";
+ document.getElementById("errorScreen").style.display="block";
+}
+
+function showSuccess(time){
+ document.getElementById("successTime").innerText="参加時間 "+time;
+ document.getElementById("success").style.display="flex";
+ resetBtn();
+}
+
+function showFail(){
+ document.getElementById("fail").style.display="flex";
+ resetBtn();
+}
+
+function closeAll(){
+ document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
+}
+
+function restart(){
+ location.reload();
+}
+
+function resetBtn(){
+ btn.innerText="この時間で参加する →";
+ btn.style.opacity="1";
+ btn.style.pointerEvents="auto";
+}
+
+</script>
 
 </body>
 </html>
