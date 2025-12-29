@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<title>やっちゃん誕生日予約</title>
+<title>やっちゃん誕生日 参加予約</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -31,7 +31,7 @@ body{
   color:#666;
 }
 
-/* 時間帯カード */
+/* ─ 時間帯カード ─ */
 .slot{
   border:1px solid #ccc;
   border-radius:10px;
@@ -60,7 +60,7 @@ button.reserve{
   font-size:16px;
 }
 
-/* ------ ▼ 共通モーダル背景 ------ */
+/* ─ モーダル背景共通 ─ */
 .modalBg{
   position:fixed;
   top:0;left:0;
@@ -71,12 +71,12 @@ button.reserve{
   align-items:center;
 }
 
-/* ---- 成功ポップアップ本家寄せ ---- */
+/* ─ 成功ポップアップ ─ */
 .popupCard{
   background:white;
   border-radius:12px;
   padding:20px;
-  width:290px;
+  width:300px;
   text-align:center;
 }
 
@@ -96,6 +96,12 @@ button.reserve{
   margin:8px 0 12px;
 }
 
+.notice{
+  font-size:12px;
+  color:#444;
+  margin-top:10px;
+}
+
 .popupBtn{
   width:100%;
   padding:10px;
@@ -104,7 +110,7 @@ button.reserve{
   background:white;
 }
 
-/* ---- QR ---- */
+/* ─ QR ─ */
 .modal{
   background:white;
   padding:25px;
@@ -130,7 +136,6 @@ button.reserve{
   position:relative;
 }
 
-/* 3つの角 */
 .finder{
   width:60px;
   height:60px;
@@ -148,22 +153,23 @@ button.reserve{
 <div class="container">
 
   <div class="title">2025年12月30日(火)</div>
-  <div class="sub">やっちゃん誕生日会 参加時間帯を選んでください</div>
+  <div class="sub">やっちゃん誕生日会の参加時間帯を選んでください</div>
+
+  <!-- 8枠 -->
+  <div class="slot"><input type="radio" name="time" value="18:00"><span class="ok">○</span><span>18:00〜</span></div>
+  <div class="slot"><input type="radio" name="time" value="18:20"><span class="warn">△</span><span>18:20〜</span></div>
+  <div class="slot"><input type="radio" name="time" value="18:40"><span class="ok">○</span><span>18:40〜</span></div>
+  <div class="slot"><input type="radio" name="time" value="19:00"><span class="ok">○</span><span>19:00〜</span></div>
+  <div class="slot"><input type="radio" name="time" value="19:20"><span class="warn">△</span><span>19:20〜</span></div>
 
   <div class="slot">
-    <input type="radio" name="time" value="18:00">
-    <span class="ok">○</span><span>18:00〜</span>
+    <input type="radio" disabled>
+    <span class="ng">×</span>
+    <span>19:40〜（選択不可）</span>
   </div>
 
-  <div class="slot">
-    <input type="radio" name="time" value="19:20">
-    <span class="warn">△</span><span>19:20〜</span>
-  </div>
-
-  <div class="slot">
-    <input type="radio" name="time" value="19:40">
-    <span class="ng">×</span><span>19:40〜</span>
-  </div>
+  <div class="slot"><input type="radio" name="time" value="20:00"><span class="ok">○</span><span>20:00〜</span></div>
+  <div class="slot"><input type="radio" name="time" value="20:20"><span class="warn">△</span><span>20:20〜</span></div>
 
   <button class="reserve" onclick="reserve()">この時間で参加する →</button>
 </div>
@@ -175,16 +181,20 @@ button.reserve{
 
     <div class="popupTitle">
       ＜ 空き枠発見 ＞<br>
-      パビリオン/イベントが<br>
-      予約されました
+      誕生日会の参加予約が<br>
+      完了しました
     </div>
 
-    <div class="popupIcon">
-      📅🕒
-    </div>
+    <div class="popupIcon">🎉🎂</div>
 
     <div class="popupTime">
       参加時間：<span id="successTimeText"></span>
+    </div>
+
+    <div class="notice">
+      このあと入場用QRコードが表示されます。<br>
+      当日入場時に提示が必要です。<br>
+      必ずスクリーンショットを保存してください。
     </div>
 
     <button class="popupBtn">とじる</button>
@@ -219,9 +229,7 @@ button.reserve{
 
 <script>
 
-// ----------------------
-// 予約ボタン押下
-// ----------------------
+// ─ 予約処理 ─
 function reserve(){
 
   let t = document.querySelector("input[name='time']:checked");
@@ -232,16 +240,11 @@ function reserve(){
 
   let time = t.value;
 
-  // 3秒待機
-  setTimeout(()=>{
-      showSuccess(time);
-  },3000);
+  setTimeout(()=>{ showSuccess(time); },3000);
 }
 
 
-// ----------------------
-// 成功ポップアップ表示 → 10秒 → QR
-// ----------------------
+// ─ 成功表示 → 10秒 → QR ─
 function showSuccess(time){
 
   document.getElementById("successTimeText").innerText = time;
@@ -254,9 +257,7 @@ function showSuccess(time){
 }
 
 
-// ----------------------
-// QR（本物寄せ）生成
-// ----------------------
+// ─ QR描画 ─
 function showQR(){
 
   const qr = document.getElementById("qrCanvas");
@@ -270,7 +271,6 @@ function showQR(){
   for(let y=0; y<22; y++){
     for(let x=0; x<22; x++){
 
-      // 角の検出領域は描かない
       if((x<5 && y<5) || (x>16 && y<5) || (x<5 && y>16)) continue;
 
       if(Math.random()>0.55){
@@ -282,11 +282,10 @@ function showQR(){
   document.getElementById("qrShow").style.display="flex";
 }
 
-
-// ----------------------
 function closeAll(){
   document.querySelectorAll(".modalBg").forEach(m=>m.style.display="none");
 }
+
 </script>
 
 </body>
