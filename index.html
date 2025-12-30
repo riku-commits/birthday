@@ -217,12 +217,11 @@ function showSuccess(time){
  document.getElementById("successTime").innerText="参加時間："+time;
  document.getElementById("success").style.display="flex";
 
- // 10秒後 → 自動でQRへ
- setTimeout(()=>{
-   document.getElementById("success").style.display="none";
-   document.getElementById("mainScreen").style.display="none";
-   document.getElementById("qr").style.display="block";
- },10000);
+// 10秒後 → qr.html へ遷移
+setTimeout(() => {
+  window.location.href = "qr.html";
+}, 10000);
+
 
  resetBtn();
 }
@@ -237,3 +236,4 @@ function resetBtn(){
 
 </body>
 </html>
+
