@@ -206,51 +206,23 @@ btn.addEventListener("click", ()=>{
  btn.style.opacity = "0.6";
  btn.style.pointerEvents = "none";
 
-// =======================
-// 最終仕様：確率100%版
-// 1% 成功 / 10% 待機 / 10% エラー / 79% 失敗
-// =======================
-const r = Math.floor(Math.random() * 100);
-// 0〜99 のいずれかになる（=必ず100分率で一致）
-
-if (r < 1) {
-    // 0 → 1%
-    setTimeout(() => {
-        showSuccess(checked.value);
-    }, 3000);
-
-} else if (r < 11) {
-    // 1〜10 → 10%
-    setTimeout(() => {
-        window.location.href = "waiting.html";
-    }, 3000);
-
-} else if (r < 21) {
-    // 11〜20 → 10%
-    setTimeout(() => {
-        window.location.href = "error.html";
-    }, 3000);
-
-} else {
-    // 21〜99 → 79%
-    setTimeout(() => {
-        alert("予約できませんでした。");
-        resetBtn();
-    }, 3000);
-}
-
-
+ // 3秒処理→成功モーダル
+ setTimeout(()=>{
+   showSuccess(checked.value);
+ },3000);
+});
 
 
 function showSuccess(time){
  document.getElementById("successTime").innerText="参加時間："+time;
  document.getElementById("success").style.display="flex";
 
-// 10秒後 → qr.html へ遷移
-setTimeout(() => {
-  window.location.href = "qr.html";
-}, 10000);
-
+ // 10秒後 → 自動でQRへ
+ setTimeout(()=>{
+   document.getElementById("success").style.display="none";
+   document.getElementById("mainScreen").style.display="none";
+   document.getElementById("qr").style.display="block";
+ },10000);
 
  resetBtn();
 }
@@ -265,6 +237,3 @@ function resetBtn(){
 
 </body>
 </html>
-
-
-
