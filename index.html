@@ -207,32 +207,38 @@ btn.addEventListener("click", ()=>{
  btn.style.pointerEvents = "none";
 
 // =======================
+// 最終仕様：確率100%版
 // 1% 成功 / 10% 待機 / 10% エラー / 79% 失敗
 // =======================
 const r = Math.floor(Math.random() * 100);
+// 0〜99 のいずれかになる（=必ず100分率で一致）
 
-// ▼ 3秒待って結果確定
-setTimeout(()=>{
+if (r < 1) {
+    // 0 → 1%
+    setTimeout(() => {
+        showSuccess(checked.value);
+    }, 3000);
 
-  if(r < 1){
-    // ★ 1%：成功
-    showSuccess(checked.value);
+} else if (r < 11) {
+    // 1〜10 → 10%
+    setTimeout(() => {
+        window.location.href = "waiting.html";
+    }, 3000);
 
-  }else if(r < 11){
-    // ★ 10%：待機画面へ
-    window.location.href = "waiting.html";
+} else if (r < 21) {
+    // 11〜20 → 10%
+    setTimeout(() => {
+        window.location.href = "error.html";
+    }, 3000);
 
-  }else if(r < 21){
-    // ★ 10%：エラー画面へ
-    window.location.href = "error.html";
+} else {
+    // 21〜99 → 79%
+    setTimeout(() => {
+        alert("予約できませんでした。");
+        resetBtn();
+    }, 3000);
+}
 
-  }else{
-    // ★ 79%：普通に失敗
-    alert("予約できませんでした。");
-    resetBtn();
-  }
-
-},3000);
 
 
 
@@ -259,5 +265,6 @@ function resetBtn(){
 
 </body>
 </html>
+
 
 
