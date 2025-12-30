@@ -206,11 +206,34 @@ btn.addEventListener("click", ()=>{
  btn.style.opacity = "0.6";
  btn.style.pointerEvents = "none";
 
- // 3秒処理→成功モーダル
- setTimeout(()=>{
-   showSuccess(checked.value);
- },3000);
-});
+// =======================
+// 1% 成功 / 10% 待機 / 10% エラー / 79% 失敗
+// =======================
+const r = Math.floor(Math.random() * 100);
+
+// ▼ 3秒待って結果確定
+setTimeout(()=>{
+
+  if(r < 1){
+    // ★ 1%：成功
+    showSuccess(checked.value);
+
+  }else if(r < 11){
+    // ★ 10%：待機画面へ
+    window.location.href = "waiting.html";
+
+  }else if(r < 21){
+    // ★ 10%：エラー画面へ
+    window.location.href = "error.html";
+
+  }else{
+    // ★ 79%：普通に失敗
+    alert("予約できませんでした。");
+    resetBtn();
+  }
+
+},3000);
+
 
 
 function showSuccess(time){
@@ -236,4 +259,5 @@ function resetBtn(){
 
 </body>
 </html>
+
 
