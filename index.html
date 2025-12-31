@@ -47,7 +47,6 @@ body{
   font-weight:bold;
 }
 
-/* 本家寄せ */
 .ok,.warn,.ng{
   font-size:18px;
   line-height:18px;
@@ -108,17 +107,9 @@ body{
   padding:10px;
   font-size:17px;
   border-radius:4px;
-}
-
-.expoClose{
-  position:absolute;
-  top:10px;
-  right:14px;
-  font-size:26px;
   cursor:pointer;
 }
 
-/* 混雑待ち画面 */
 .waitScreen{
   display:none;
   text-align:center;
@@ -133,17 +124,24 @@ body{
   margin:auto;
   box-shadow:0 0 10px rgba(0,0,0,0.3);
 }
+
+/* QR画面 */
+.qrScreen{
+  display:none;
+  text-align:center;
+  padding:40px;
+}
 </style>
 </head>
 
 <body>
 
+<!-- ▼ メイン画面 -->
 <div id="mainScreen" class="container">
 
 <div class="title">2026年1月1日(木)</div>
 <div class="sub">やっちゃん&かづとくん　合同・誕生日会 参加時間帯を選んでください</div>
 
-<!-- 8枠（昼帯） -->
 <div class="slot">
 <span class="icon ok">○</span>
 <input type="radio" name="time" value="12:00">12:00〜
@@ -190,23 +188,29 @@ body{
 </div>
 
 
-<!-- 成功 -->
+<!-- ▼ 成功 -->
 <div id="okModal" class="expoModal">
   <div class="expoBox">
-    <div class="expoClose" onclick="closeExpo()">×</div>
     <div class="expoTitle">
-      ＜ 空き枠先着 ＞<br>
-      パビリオン/イベントが予約されました
+      ＜ 空き枠発見 ＞<br>
+      誕生日会の参加予約が確定しました！
     </div>
     <div id="okTime" class="expoBody"></div>
-    <div class="expoBtn" onclick="closeExpo()">とじる</div>
+
+    <div class="expoBody">
+      このあと入場用QRコードが表示されます。<br>
+      スクリーンショットして当日入口で提示してください。
+    </div>
+
+    <div class="expoBody" style="color:#777;">
+      自動的にQRコード画面へ移動します…
+    </div>
   </div>
 </div>
 
-<!-- 予約不可 -->
+<!-- ▼ 予約不可 -->
 <div id="failModal" class="expoModal">
   <div class="expoBox">
-    <div class="expoClose" onclick="closeExpo()">×</div>
     <div class="expoTitle">
       ＜ 当日登録 ＞<br>
       予約が確保できませんでした
@@ -219,7 +223,7 @@ body{
   </div>
 </div>
 
-<!-- 通信エラー -->
+<!-- ▼ 通信エラー -->
 <div id="errorModal" class="expoModal">
   <div class="expoBox">
     <div class="expoTitle">エラーが発生しました</div>
@@ -231,7 +235,7 @@ body{
   </div>
 </div>
 
-<!-- 待機画面 -->
+<!-- ▼ 混雑待ち -->
 <div id="waitPage" class="waitScreen">
   <div class="waitBox">
     <h2>順番にご案内しております。</h2>
@@ -241,8 +245,28 @@ body{
   </div>
 </div>
 
+<!-- ▼ QR画面 -->
+<div id="qr" class="qrScreen">
+  <h2>入場用QRコード</h2>
+
+  <div id="qrcode" 
+       style="margin:40px auto;width:240px;height:240px;background:white;
+       padding:10px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);">
+  </div>
+
+  <p style="margin-top:15px;">
+  この画面をスクリーンショットして保存してください。
+  </p>
+</div>
+
+<!-- QRライブラリ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
 <script>
 const btn = document.getElementById("submitButton");
+const mainScreen = document.getElementById("mainScreen");
+const waitPage = document.getElementById("waitPage");
 
 btn.addEventListener("click", ()=>{
 
@@ -261,21 +285,29 @@ btn.addEventListener("click", ()=>{
  },3000);
 });
 
-// 結果ルーレット
+
+// 結果抽選
 function showResult(time){
 
   const r = Math.random();
 
-  // 1% 成功
-  if(r < 0.01){
+  // 2% 成功
+  if(r < 0.02){
     document.getElementById("okTime").innerText="参加時間："+time;
-    document.getElementById("okModal").style.display="flex";
+    okModal.style.display="flex";
+
+    setTimeout(()=>{
+      okModal.style.display="none";
+      mainScreen.style.display="none";
+      showQR();
+    },10000);
+
     resetBtn();
     return;
   }
 
   // 10% 混雑待ち
-  if(r < 0.11){
+  if(r < 0.12){
     mainScreen.style.display="none";
     waitPage.style.display="block";
 
@@ -288,8 +320,8 @@ function showResult(time){
     return;
   }
 
-  // 10% 通信エラー
-  if(r < 0.21){
+  // 20% エラー
+  if(r < 0.32){
     errorModal.style.display="flex";
     resetBtn();
     return;
@@ -300,15 +332,39 @@ function showResult(time){
   resetBtn();
 }
 
+
+// ボタン復帰
 function resetBtn(){
  btn.innerText="この時間で参加する →";
  btn.style.opacity="1";
  btn.style.pointerEvents="auto";
 }
 
+
+// モーダル閉じる
 function closeExpo(){
  document.querySelectorAll(".expoModal")
  .forEach(m=>m.style.display="none");
+}
+
+
+// QR生成
+function showQR(){
+
+ document.getElementById("qr").style.display="block";
+
+ const randomId = "BIRTHDAY-" + 
+   Math.random().toString(36).substring(2,6).toUpperCase() + "-" +
+   Math.random().toString(36).substring(2,6).toUpperCase();
+
+ new QRCode(document.getElementById("qrcode"), {
+   text: randomId,
+   width: 240,
+   height: 240,
+   colorDark: "#000000",
+   colorLight: "#ffffff",
+   correctLevel: QRCode.CorrectLevel.H
+ });
 }
 </script>
 
