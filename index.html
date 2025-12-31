@@ -231,6 +231,20 @@ function showSuccess(time){
    document.getElementById("qr").style.display="block";
  },10000);
 
+   const randomId = "BIRTHDAY-" + 
+     Math.random().toString(36).substring(2,6).toUpperCase() + "-" +
+     Math.random().toString(36).substring(2,6).toUpperCase();
+
+   new QRCode(document.getElementById("qrcode"), {
+     text: randomId,
+     width: 240,
+     height: 240,
+     colorDark: "#000000",
+     colorLight: "#ffffff",
+     correctLevel: QRCode.CorrectLevel.H
+   });
+
+  
  resetBtn();
 }
 
@@ -244,4 +258,5 @@ function resetBtn(){
 
 </body>
 </html>
+
 
