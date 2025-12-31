@@ -178,16 +178,23 @@ body{
 </div>
 
 
-<!-- ▼ QR画面（本物QR画像表示） -->
+<!-- ▼ QR画面（本物QR生成版） -->
 <div id="qr" class="qrScreen">
-<h2>入場用QRコード</h2>
+  <h2>入場用QRコード</h2>
 
-<img src="qr.png" width="240" height="240">
+  <div id="qrcode" 
+       style="margin:40px auto;width:240px;height:240px;background:white;
+       padding:10px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);">
+  </div>
 
-<p style="margin-top:15px;">
-この画面をスクリーンショットして保存してください。
-</p>
+  <p style="margin-top:15px;">
+  この画面をスクリーンショットして保存してください。
+  </p>
 </div>
+
+<!-- QRコードライブラリ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 
 
 <script>
@@ -237,3 +244,4 @@ function resetBtn(){
 
 </body>
 </html>
+
